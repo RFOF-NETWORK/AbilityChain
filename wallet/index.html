@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>AbilityChain Wallet (PZQQET-0)</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <header>
+    <h1>AbilityChain Wallet (PZQQET-0)</h1>
+  </header>
+
+  <main>
+
+    <section id="auth">
+      <h2>Login / Account erstellen</h2>
+
+      <div id="register-box">
+        <h3>Account erstellen</h3>
+        <input id="reg-user" placeholder="Username">
+        <input id="reg-pw1" type="password" placeholder="Passwort">
+        <input id="reg-pw2" type="password" placeholder="Passwort wiederholen">
+        <select id="reg-words">
+          <option value="12">12 Wörter</option>
+          <option value="24">24 Wörter</option>
+        </select>
+        <button id="reg-btn">Account erstellen + PZQQET-Seed</button>
+        <pre id="reg-seed"></pre>
+      </div>
+
+      <div id="login-box">
+        <h3>Login</h3>
+        <input id="login-user" placeholder="Username">
+        <input id="login-pw" type="password" placeholder="Passwort">
+        <button id="login-btn">Login</button>
+        <pre id="login-status"></pre>
+      </div>
+    </section>
+
+    <section id="wallet-ui" style="display:none;">
+      <section id="balance"></section>
+      <section id="mining"></section>
+      <section id="history"></section>
+      <section id="dex"></section>
+    </section>
+
+  </main>
+
+  <script src="pzqqet-0_standard.js"></script>
+  <script src="xp-mining.js"></script>
+  <script src="time-token.js"></script>
+  <script src="persistence.js"></script>
+
+  <script src="../api/wallet-controller.js"></script>
+  <script src="ui/components/balance-tile.js"></script>
+  <script src="ui/components/euro-box.js"></script>
+  <script src="ui/components/mining-box.js"></script>
+  <script src="ui/components/tx-history.js"></script>
+  <script src="ui/components/dex-buttons.js"></script>
+
+</body>
+</html>
