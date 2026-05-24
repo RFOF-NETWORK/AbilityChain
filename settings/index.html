@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>AbilityChain Settings</title>
+
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      color: #FFD700;
+      font-family: system-ui, sans-serif;
+      text-align: center;
+      padding-top: 60px;
+    }
+
+    .box {
+      display: inline-block;
+      border: 1px solid #FFD700;
+      padding: 20px;
+      border-radius: 8px;
+      min-width: 320px;
+    }
+
+    button {
+      background: #0055FF;
+      color: #FFD700;
+      border: none;
+      padding: 8px 14px;
+      margin: 6px;
+      cursor: pointer;
+    }
+
+    input {
+      background: #000;
+      border: 1px solid #FFD700;
+      color: #FFD700;
+      padding: 6px 8px;
+      width: 80%;
+      margin: 4px 0;
+    }
+
+    pre {
+      text-align: left;
+      white-space: pre-wrap;
+      word-break: break-word;
+      border: 1px solid #FFD700;
+      padding: 10px;
+      border-radius: 6px;
+      max-width: 400px;
+      margin: 10px auto;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="box">
+    <h1>Settings</h1>
+
+    <div id="settings-info"></div>
+
+    <h3>Seeds anzeigen</h3>
+    <input id="pw2-input" type="password" maxlength="4" placeholder="2. Passwort (4 Zeichen)">
+    <button id="show-seeds-btn">Seeds anzeigen</button>
+
+    <pre id="seeds-box" style="display:none;"></pre>
+
+    <button id="logout-btn">Logout</button>
+  </div>
+
+  <script type="module">
+    import { getCurrentUser, isLoggedIn, logout } from "../global/auth.js";
+
+    // Wenn nicht eingeloggt → zurück zur Root
+    if (!isLoggedIn()) {
+      window.location.href = "../index.html";
+    }
+
+    // User laden
+    const user = getCurrentUser();
+    const info = document.getElementById("settings-info");
+
+    info.innerHTML = `
+      <p><strong>User:</strong> ${user.username}</p>
+      <p><strong>Mask:</strong> ${user.mask}</p>
+    `;
+
+    // PW2 + Seeds
+    const pw2Input = document.getElementById("pw2-input");
+    const seedsBox = document.getElementById("seeds-box");
+    const showBtn = document.getElementById("show-seeds-btn");
+
+    showBtn.addEventListener("click", () => {
+      const pw2 = pw2Input.value;
+
+      if (pw2.length !== 4) {
+        seedsBox.style.display = "block";
+        seedsBox.textContent = "Falsches 2. Passwort.";
+        return;
+      }
+
+      // --------------------------------------------------------
+      // HIER wird später die echte PZQQET‑Seed‑Generierung eingebaut
+      // --------------------------------------------------------
+      const seed12 = "word1 word2 word3 ... (12 Wörter)";
+      const seed24 = "word1 word2 word3 ... (24 Wörter)";
+
+      seedsBox.style.display = "block";
+      seedsBox.textContent =
+        "12‑Wort‑Seed:\n" + seed12 + "\n\n" +
+        "24‑Wort‑Seed:\n" + seed24;
+    });
+
+    // Logout
+    document.getElementById("logout-btn").addEventListener("click", () => {
+      logout();
+      window.location.href = "../index.html";
+    });
+  </script>
+
+</body>
+</html>
