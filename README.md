@@ -2,6 +2,75 @@
 
 ---
 
+
+
+```
+RFOF-GOLDEN-AbilityChain/
+│
+├── .github/
+│   └── workflows/
+│       └── deploy.yml
+│
+├── chain/
+│   ├── core/
+│   │   ├── ledger.js
+│   │   ├── blocks.js
+│   │   ├── mempool.js
+│   │   ├── consensus.js
+│   │   └── validators.js
+│   ├── protocol/
+│   │   ├── encoding.js
+│   │   ├── schema.js
+│   │   └── network.js
+│   ├── explorer/
+│   │   ├── index.html
+│   │   ├── explorer.js
+│   │   └── explorer.css
+│   └── viewer/
+│       ├── tx-viewer.js
+│       ├── block-viewer.js
+│       └── styles.css
+│
+├── wallet/
+│   ├── index.html
+│   ├── styles.css
+│   ├── pzqqet-0_standard.js
+│   ├── xp-mining.js
+│   ├── time-token.js
+│   ├── persistence.js
+│   └── ui/
+│       ├── components/
+│       │   ├── balance-tile.js
+│       │   ├── euro-box.js
+│       │   ├── mining-box.js
+│       │   ├── tx-history.js
+│       │   └── dex-buttons.js
+│       └── styles/
+│           ├── dark.css
+│           └── light.css
+│
+├── api/
+│   ├── wallet-controller.js
+│   ├── identity-controller.js
+│   ├── finance-controller.js
+│   └── explorer-controller.js
+│
+├── public/
+│   ├── favicon.ico
+│   ├── logo.svg
+│   └── manifest.json
+│
+├── scripts/
+│   ├── build.js
+│   ├── serve.js
+│   └── deploy.js
+│
+├── .gitignore
+├── package.json
+├── README.md
+└── LICENSE
+```
+
 1. .gitignore
 
 ```gitignore
