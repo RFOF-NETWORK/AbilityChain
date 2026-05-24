@@ -2,13 +2,9 @@
 
 ---
 
-🧱 BLOCK 1/5 — ROOT + SCRIPTS + WORKFLOW
-
----
-
 1. .gitignore
 
-`gitignore
+```gitignore
 node_modules/
 dist/
 .cache/
@@ -16,13 +12,13 @@ dist/
 .DS_Store
 npm-debug.log*
 yarn-error.log*
-`
+```
 
 ---
 
 2. package.json
 
-`json
+```json
 {
   "name": "rfof-golden-abilitychain",
   "version": "1.0.0",
@@ -37,13 +33,13 @@ yarn-error.log*
   "dependencies": {},
   "devDependencies": {}
 }
-`
+```
 
 ---
 
 3. README.md
 
-`markdown
+```markdown
 
 RFOF-GOLDEN AbilityChain
 
@@ -68,20 +64,20 @@ Struktur
 
 4. LICENSE (MIT)
 
-`text
+```text
 MIT License
 
 Copyright (c) 2026 Justin
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files...
-`
+```
 
 ---
 
 5. .github/workflows/deploy.yml
 
-`yaml
+```yaml
 name: Deploy AbilityChain
 
 on:
@@ -112,13 +108,13 @@ jobs:
       with:
         githubtoken: ${{ secrets.GITHUBTOKEN }}
         publish_dir: ./dist
-`
+```
 
 ---
 
 6. scripts/build.js
 
-`js
+```js
 import { mkdirSync, cpSync } from "node:fs";
 
 function main() {
@@ -132,13 +128,13 @@ function main() {
 }
 
 main();
-`
+```
 
 ---
 
 7. scripts/serve.js
 
-`js
+```js
 import http from "node:http";
 import { readFileSync, existsSync } from "node:fs";
 import { extname, join } from "node:path";
@@ -174,13 +170,13 @@ http
   .listen(PORT, () => {
     console.log(Serving on http://localhost:${PORT});
   });
-`
+```
 
 ---
 
 8. scripts/deploy.js
 
-`js
+```js
 import { execSync } from "node:child_process";
 
 function run(cmd) {
@@ -190,13 +186,13 @@ function run(cmd) {
 
 run("npm run build");
 console.log("Deployment build ready in /dist.");
-`
+```
 
 ---
 
 📌 chain/core/ledger.js
 
-`js
+```js
 // Ledger – Grundbuch der AbilityChain
 
 export class Ledger {
@@ -237,13 +233,13 @@ export class Ledger {
     return this.state.get(addr) || null;
   }
 }
-`
+```
 
 ---
 
 📌 chain/core/blocks.js
 
-`js
+```js
 // Block-Struktur der AbilityChain
 
 import crypto from "crypto";
@@ -269,13 +265,13 @@ export class Block {
       .digest("hex");
   }
 }
-`
+```
 
 ---
 
 📌 chain/core/mempool.js
 
-`js
+```js
 // Mempool – unbestätigte Transaktionen
 
 export class Mempool {
@@ -297,13 +293,13 @@ export class Mempool {
     return this.pool.length;
   }
 }
-`
+```
 
 ---
 
 📌 chain/core/consensus.js
 
-`js
+```js
 // Konsens – deterministisch, kein Mining, 0ms GoldenChain-Style
 
 export class Consensus {
@@ -327,13 +323,13 @@ export class Consensus {
     return block;
   }
 }
-`
+```
 
 ---
 
 📌 chain/core/validators.js
 
-`js
+```js
 // Validatoren für Transaktionen und Blöcke
 
 export const Validators = {
@@ -354,13 +350,13 @@ export const Validators = {
     );
   }
 };
-`
+```
 
 ---
 
 📌 chain/protocol/encoding.js
 
-`js
+```js
 // Encoding – Serialisierung für Netzwerk & Storage
 
 export const Encoding = {
@@ -376,13 +372,13 @@ export const Encoding = {
     }
   }
 };
-`
+```
 
 ---
 
 📌 chain/protocol/schema.js
 
-`js
+```js
 // Schema-Definitionen der AbilityChain
 
 export const Schema = {
@@ -399,13 +395,13 @@ export const Schema = {
     timestamp: "number"
   }
 };
-`
+```
 
 ---
 
 📌 chain/protocol/network.js
 
-`js
+```js
 // Netzwerk-Schicht – lokal, später austauschbar gegen echtes P2P
 
 export class Network {
@@ -423,16 +419,13 @@ export class Network {
     }
   }
 }
-`
----
-
-🌐 chain/explorer
+```
 
 ---
 
 1. chain/explorer/index.html
 
-`html
+```html
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -455,13 +448,13 @@ export class Network {
   <script src="explorer.js"></script>
 </body>
 </html>
-`
+```
 
 ---
 
 2. chain/explorer/explorer.js
 
-`js
+```js
 // AbilityChain Explorer – zeigt Blöcke & Transaktionen
 
 async function fetchChain() {
@@ -501,13 +494,13 @@ async function update() {
 
 update();
 setInterval(update, 2000);
-`
+```
 
 ---
 
 3. chain/explorer/explorer.css
 
-`css
+```css
 body {
   margin: 0;
   background: #0a0a0a;
@@ -536,17 +529,12 @@ search {
   border-radius: 6px;
   border: 1px solid #222;
 }
-`
-
----
-
-🔍 chain/viewer
-
+```
 ---
 
 4. chain/viewer/tx-viewer.js
 
-`js
+```js
 // TX Viewer – zeigt Details einer einzelnen Transaktion
 
 export function renderTxDetails(tx) {
@@ -560,13 +548,13 @@ export function renderTxDetails(tx) {
     </div>
   `;
 }
-`
+```
 
 ---
 
 5. chain/viewer/block-viewer.js
 
-`js
+```js
 // Block Viewer – zeigt Details eines Blocks
 
 import { renderTxDetails } from "./tx-viewer.js";
@@ -586,13 +574,13 @@ export function renderBlockDetails(block) {
     </div>
   `;
 }
-`
+```
 
 ---
 
 6. chain/viewer/styles.css
 
-`css
+```css
 body {
   background: #000;
   color: #fff;
@@ -610,13 +598,13 @@ body {
 h2, h3 {
   margin-top: 0;
 }
-`
+```
 
 ---
 
 🌐 1. wallet/index.html
 
-`html
+```html
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -680,13 +668,13 @@ h2, h3 {
 
 </body>
 </html>
-`
+```
 
 ---
 
 🎨 2. wallet/styles.css
 
-`css
+```css
 body {
   margin: 0;
   background: #000;
@@ -707,13 +695,13 @@ section {
   border-radius: 8px;
   border: 1px solid #222;
 }
-`
+```
 
 ---
 
 ⚡ 3. wallet/xp-mining.js
 
-`js
+```js
 // XP Mining – Tipp-Mining Engine
 
 export function startXPMining(onUpdate) {
@@ -731,13 +719,13 @@ export function startXPMining(onUpdate) {
     onUpdate(xp);
   });
 }
-`
+```
 
 ---
 
 ⏳ 4. wallet/time-token.js
 
-`js
+```js
 // Zeit-Token Engine – 1 XP = 1 Zeit
 
 export function getTimeToken() {
@@ -747,13 +735,13 @@ export function getTimeToken() {
 export function convertXPtoTime(xp) {
   return xp;
 }
-`
+```
 
 ---
 
 💾 5. wallet/persistence.js
 
-`js
+```js
 // Persistenz Engine – lokale Speicherung
 
 export const db = {
@@ -766,13 +754,13 @@ export const db = {
     return v ? JSON.parse(v) : fallback;
   }
 };
-`
+```
 
 ---
 
 💰 6. wallet/ui/components/balance-tile.js
 
-`js
+```js
 export function renderBalanceTile(balance) {
   return `
     <div class="balance-tile">
@@ -781,13 +769,13 @@ export function renderBalanceTile(balance) {
     </div>
   `;
 }
-`
+```
 
 ---
 
 💶 7. wallet/ui/components/euro-box.js
 
-`js
+```js
 export function renderEuroBox(euro) {
   return `
     <div class="euro-box">
@@ -796,13 +784,13 @@ export function renderEuroBox(euro) {
     </div>
   `;
 }
-`
+```
 
 ---
 
 ⛏️ 8. wallet/ui/components/mining-box.js
 
-`js
+```js
 export function renderMiningBox(xp) {
   return `
     <div class="mining-box">
@@ -812,13 +800,13 @@ export function renderMiningBox(xp) {
     </div>
   `;
 }
-`
+```
 
 ---
 
 📜 9. wallet/ui/components/tx-history.js
 
-`js
+```js
 export function renderTxHistory(txs) {
   return `
     <div class="tx-history">
@@ -836,13 +824,13 @@ export function renderTxHistory(txs) {
     </div>
   `;
 }
-`
+```
 
 ---
 
 🔄 10. wallet/ui/components/dex-buttons.js
 
-`js
+```js
 export function renderDexButtons() {
   return `
     <div class="dex-buttons">
@@ -853,39 +841,35 @@ export function renderDexButtons() {
     </div>
   `;
 }
-`
-
----
-
-🎨 UI STYLES
+```
 
 ---
 
 🌑 11. wallet/ui/styles/dark.css
 
-`css
+```css
 body  {
   background: #000;
   color: #fff;
 }
-`
+```
 
 ---
 
 🌕 12. wallet/ui/styles/light.css
 
-`css
+```css
 body {
   background: #fff;
   color: #000;
 }
-`
+```
 
 ---
 
 📡 1. api/wallet-controller.js
 
-`js
+```js
 // Wallet-Controller – PZQQET-0 Native Mask/Seed
 
 import { db } from "../wallet/persistence.js";
@@ -942,13 +926,13 @@ export async function login(username, pw) {
 export function saveUser(username, mask) {
   db.save(user:${username}, { mask });
 }
-`
+```
 
 ---
 
 🧬 2. api/identity-controller.js
 
-`js
+```js
 // Identity-Controller – XP/Zeit Identität aus PZQQET-Maske
 
 export function deriveIdentity(mask) {
@@ -958,13 +942,13 @@ export function deriveIdentity(mask) {
 
   return { address, baseXP, baseTime };
 }
-`
+```
 
 ---
 
 💸 3. api/finance-controller.js
 
-`js
+```js
 // Finance-Controller – XP <-> Zeit <-> Fiat
 
 export function xpToTime(xp) {
@@ -978,13 +962,13 @@ export function timeToFiat(time, ratePerUnit = 0.01) {
 export function fiatToTime(fiat, ratePerUnit = 0.01) {
   return fiat / ratePerUnit;
 }
-`
+```
 
 ---
 
 🔍 4. api/explorer-controller.js
 
-`js
+```js
 // Explorer-Controller – Chain-Daten abrufen & maskieren
 
 import { Encoding } from "../chain/protocol/encoding.js";
@@ -998,13 +982,13 @@ export async function fetchChainSnapshot() {
 export function maskBlockHashWithGenesis(blockHash, genesisMask) {
   return blockHash.slice(0, 32) + genesisMask.slice(0, 32);
 }
-`
+```
 
 ---
 
 🧩 5. public/manifest.json
 
-`json
+```json
 {
   "name": "AbilityChain Wallet",
   "short_name": "AbilityChain",
@@ -1020,13 +1004,13 @@ export function maskBlockHashWithGenesis(blockHash, genesisMask) {
     }
   ]
 }
-`
+```
 
 ---
 
 🎨 6. public/logo.svg
 
-`xml
+```xml
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
   <rect width="200" height="200" fill="#000"/>
   <circle cx="100" cy="100" r="70" fill="#111" stroke="#FFD700" stroke-width="4"/>
@@ -1034,7 +1018,7 @@ export function maskBlockHashWithGenesis(blockHash, genesisMask) {
     ACX
   </text>
 </svg>
-`
+```
 
 ---
 
@@ -1042,7 +1026,7 @@ export function maskBlockHashWithGenesis(blockHash, genesisMask) {
 
 Da .ico binär ist, hier der Hinweis:
 
-👉 Du konvertierst einfach logo.svg → favicon.ico  
+👉 Man konvertiert einfach logo.svg → favicon.ico  
 (z.B. über favicon.io oder ein lokales Tool)  
 und legst es in:
 
