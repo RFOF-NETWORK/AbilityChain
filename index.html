@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>RFOF-GOLDEN AbilityChain</title>
+
   <style>
     body {
       margin: 0;
@@ -22,17 +23,116 @@
     a:hover {
       text-decoration: underline;
     }
+
+    /* --- AUTH POPUP (D‑Minimal, Blau + Gold) --- */
+    #auth-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    #auth-popup {
+      background: #000;
+      border: 2px solid #FFD700;
+      border-radius: 8px;
+      padding: 20px;
+      width: 300px;
+      color: #FFD700;
+      font-family: system-ui, sans-serif;
+      position: relative;
+    }
+    #auth-popup input {
+      width: 100%;
+      margin: 5px 0;
+      padding: 6px 8px;
+      background: #000;
+      border: 1px solid #FFD700;
+      color: #FFD700;
+    }
+    #auth-popup button {
+      background: #0055FF;
+      color: #FFD700;
+      border: none;
+      padding: 6px 10px;
+      margin: 4px 2px;
+      cursor: pointer;
+    }
+    #auth-close {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      background: transparent;
+      border: none;
+      color: #FFD700;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .auth-msg {
+      margin-top: 6px;
+      font-size: 12px;
+    }
   </style>
 </head>
+
 <body>
+
   <h1>RFOF-GOLDEN AbilityChain</h1>
   <p>Willkommen im vereinigten System aus RFOF, GoldenChain und PZQQET‑0.</p>
 
+  <!-- Navigation -->
   <a href="chain/explorer/index.html">🔗 Explorer öffnen</a>
   <a href="wallet/index.html">💰 Wallet öffnen</a>
+
+  <!-- AUTH BUTTONS -->
+  <div style="margin-top:40px;">
+    <button data-auth="login">Login / Register</button>
+    <button data-auth="settings" onclick="window.location.href='settings/index.html'" style="display:none;">Settings</button>
+    <button data-auth="logout" style="display:none;">Logout</button>
+  </div>
 
   <footer>
     <p>© 2026 AbilityChain – PZQQET‑0 Standard</p>
   </footer>
+
+  <!-- POPUP CONTAINER -->
+  <div id="auth-overlay">
+    <div id="auth-popup">
+      <button id="auth-close">×</button>
+      <h2 style="margin-top:0;">AbilityChain Login</h2>
+
+      <div style="margin-bottom:10px;">
+        <button id="auth-mode-login">Login</button>
+        <button id="auth-mode-register">Register</button>
+      </div>
+
+      <!-- LOGIN -->
+      <div id="auth-login-box">
+        <input id="login-user" placeholder="Username">
+        <input id="login-pw1" type="password" maxlength="16" placeholder="Passwort (16 Zeichen)">
+        <button id="login-btn">Login</button>
+        <div id="login-msg" class="auth-msg"></div>
+      </div>
+
+      <!-- REGISTER -->
+      <div id="auth-register-box" style="display:none;">
+        <input id="reg-user" placeholder="Username">
+        <input id="reg-pw1" type="password" maxlength="16" placeholder="Passwort (16 Zeichen)">
+        <input id="reg-pw2" type="password" maxlength="4" placeholder="2. Passwort (4 Zeichen)">
+        <button id="reg-btn">Account erstellen</button>
+        <div id="reg-msg" class="auth-msg"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AUTH LOGIK -->
+  <script type="module" src="global/auth.js"></script>
+  <script type="module">
+    import { initAuthUI } from "./global/auth.js";
+    initAuthUI();
+  </script>
+
 </body>
 </html>
