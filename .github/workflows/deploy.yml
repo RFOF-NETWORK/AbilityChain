@@ -15,7 +15,7 @@ jobs:
     - name: Setup Node
       uses: actions/setup-node@v4
       with:
-        node-version: 20
+        node-version: 22   # Node 20 ist veraltet, 22 ist stabil
 
     - name: Install
       run: npm install
@@ -29,3 +29,6 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./dist
         publish_branch: gh-pages
+        user_name: RFOF-NETWORK
+        user_email: actions@github.com
+        commit_message: "Deploy AbilityChain build"
