@@ -2,13 +2,14 @@
   "name": "rfof-golden-abilitychain",
   "version": "1.0.0",
   "description": "RFOF-GOLDEN AbilityChain – Explorer + Wallet (PZQQET-0 Standard)",
+  "type": "module",
+  "author": "@RFOF-NETWORK",
+  "license": "MIT",
   "scripts": {
     "build": "node scripts/build.js",
     "serve": "node scripts/serve.js",
     "deploy": "node scripts/deploy.js"
   },
-  "author": "@RFOF-NETWORK",
-  "license": "MIT",
   "dependencies": {},
   "devDependencies": {}
 }
