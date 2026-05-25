@@ -1,57 +1,17 @@
 {
-  "blocks": [
-    {
-      "index": 0,
-      "hash": "GENESIS-00000000000000000000000000000000",
-      "timestamp": 1710000000,
-      "transactions": []
-    },
-    {
-      "index": 1,
-      "hash": "BLOCK-00000000000000000000000000000001",
-      "timestamp": 1710000100,
-      "transactions": [
-        {
-          "hash": "TX-0001",
-          "from": "system",
-          "to": "user1",
-          "amount": 50,
-          "timestamp": 1710000100
-        }
-      ]
-    }
-  ],
-
-  "txs": [
-    {
-      "hash": "TX-0001",
-      "from": "system",
-      "to": "user1",
-      "amount": 50,
-      "timestamp": 1710000100
-    }
-  ],
-
-  "mempool": [
-    {
-      "hash": "TX-MP-0001",
-      "from": "user1",
-      "to": "user2",
-      "amount": 5
-    }
-  ],
-
-  "validators": [
-    {
-      "id": "validator-01",
-      "stake": 1000,
-      "status": "active"
-    }
-  ],
-
+  "genesisHash": "GENESIS-PZQQET-0000000000",
+  "streams": {
+    "TX": [],
+    "TIME": [],
+    "XP": []
+  },
+  "mempool": {
+    "TX": [],
+    "TIME": [],
+    "XP": []
+  },
   "consensus": {
     "algorithm": "PZQQET-0",
-    "lastBlockTime": 1710000100,
-    "difficulty": 1
+    "version": "fractal-v1"
   }
 }
