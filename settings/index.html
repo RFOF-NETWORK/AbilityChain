@@ -59,15 +59,12 @@
 
   <h1>Settings</h1>
 
-  <!-- LOGIN / LOGOUT / SETTINGS BUTTONS -->
   <div>
     <button data-auth="login">Login</button>
     <button data-auth="settings" style="display:none;">Settings</button>
     <button data-auth="logout" style="display:none;">Logout</button>
   </div>
 
-
-  <!-- SEED ANZEIGE -->
   <div class="section">
     <h2>Seed Phrase</h2>
 
@@ -79,22 +76,16 @@
     <div id="seed-output" class="seed-box" style="display:none;"></div>
   </div>
 
-
-  <!-- MASK ANZEIGE -->
   <div class="section">
     <h2>Mask</h2>
     <div id="mask-output" class="seed-box"></div>
   </div>
 
-
-  <!-- IMPORTS -->
   <script type="module">
     import { getCurrentUser, initAuthUI } from "../global/auth.js";
 
-    // AUTH INITIALISIEREN (lädt popup.html automatisch)
     initAuthUI();
 
-    // SEED ANZEIGE
     const btn = document.getElementById("show-seeds-btn");
     const out = document.getElementById("seed-output");
     const pw2 = document.getElementById("pw2-input");
@@ -121,7 +112,6 @@
         user.seed24.join(" ");
     };
 
-    // MASK ANZEIGE
     const maskOut = document.getElementById("mask-output");
     const user = getCurrentUser();
     maskOut.textContent = user ? user.mask : "Keine Maske (nicht eingeloggt)";
