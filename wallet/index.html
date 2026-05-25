@@ -133,7 +133,6 @@
   <script type="module">
     import { initAuthUI, isLoggedIn, logout } from "../global/auth.js";
 
-    // Auth-UI initialisieren
     initAuthUI();
 
     const btnLogin = document.getElementById("btn-login");
@@ -141,26 +140,27 @@
     const btnLogout = document.getElementById("btn-logout");
     const walletUI = document.getElementById("wallet-ui");
 
-    // Sichtbarkeit der Buttons steuern
-    if (isLoggedIn()) {
-      btnLogin.style.display = "none";
-      btnSettings.style.display = "inline-block";
-      btnLogout.style.display = "inline-block";
-      walletUI.style.display = "block";
-    } else {
-      btnLogin.style.display = "inline-block";
-      btnSettings.style.display = "none";
-      btnLogout.style.display = "none";
-      walletUI.style.display = "none";
+    function updateUI() {
+      if (isLoggedIn()) {
+        btnLogin.style.display = "none";
+        btnSettings.style.display = "inline-block";
+        btnLogout.style.display = "inline-block";
+        walletUI.style.display = "block";
+      } else {
+        btnLogin.style.display = "inline-block";
+        btnSettings.style.display = "none";
+        btnLogout.style.display = "none";
+        walletUI.style.display = "none";
+      }
     }
 
-    // Logout
+    updateUI();
+
     btnLogout.addEventListener("click", () => {
       logout();
-      window.location.reload();
+      updateUI();
     });
 
-    // Settings
     btnSettings.addEventListener("click", () => {
       window.location.href = "../settings/index.html";
     });
