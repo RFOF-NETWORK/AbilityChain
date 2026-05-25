@@ -123,24 +123,25 @@
     const btnSettings = document.getElementById("btn-settings");
     const btnLogout = document.getElementById("btn-logout");
 
-    // Sichtbarkeit der Buttons steuern
-    if (isLoggedIn()) {
-      btnLogin.style.display = "none";
-      btnSettings.style.display = "inline-block";
-      btnLogout.style.display = "inline-block";
-    } else {
-      btnLogin.style.display = "inline-block";
-      btnSettings.style.display = "none";
-      btnLogout.style.display = "none";
+    function updateUI() {
+      if (isLoggedIn()) {
+        btnLogin.style.display = "none";
+        btnSettings.style.display = "inline-block";
+        btnLogout.style.display = "inline-block";
+      } else {
+        btnLogin.style.display = "inline-block";
+        btnSettings.style.display = "none";
+        btnLogout.style.display = "none";
+      }
     }
 
-    // Logout
+    updateUI();
+
     btnLogout.addEventListener("click", () => {
       logout();
-      window.location.reload();
+      updateUI();
     });
 
-    // Settings
     btnSettings.addEventListener("click", () => {
       window.location.href = "../../settings/index.html";
     });
