@@ -71,7 +71,7 @@
 
   <script type="module">
     import { getCurrentUser, isLoggedIn, logout } from "../global/auth.js";
-    import { verifyAndDeriveIdentity } from "../wallet/pzqqet-0_standard.js";
+    import { PZQQET_FUSION_MASTER } from "../wallet/pzqqet-0_standard.js";
 
     // Wenn nicht eingeloggt → zurück zur Root
     if (!isLoggedIn()) {
@@ -86,6 +86,24 @@
       <p><strong>User:</strong> ${user.username}</p>
       <p><strong>Mask:</strong> ${user.mask}</p>
     `;
+
+    // ------------------------------------------------------------
+    // Lokale Funktion: verifyAndDeriveIdentity
+    // (Ableitung aus dem WordPool der Standard-Datei)
+    // ------------------------------------------------------------
+    function verifyAndDeriveIdentity(username, pw2) {
+      const pool = PZQQET_FUSION_MASTER.Axioms.wordPool;
+
+      const seed12 = Array.from({ length: 12 }, () =>
+        pool[Math.floor(Math.random() * pool.length)]
+      );
+
+      const seed24 = Array.from({ length: 24 }, () =>
+        pool[Math.floor(Math.random() * pool.length)]
+      );
+
+      return { seed12, seed24 };
+    }
 
     // PW2 + Seeds
     const pw2Input = document.getElementById("pw2-input");
@@ -102,7 +120,7 @@
         return;
       }
 
-      // 2. Echte Seeds aus PZQQET ableiten
+      // 2. Echte Seeds ableiten
       const { seed12, seed24 } = verifyAndDeriveIdentity(user.username, pw2);
 
       // 3. Seeds anzeigen
