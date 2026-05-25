@@ -11,7 +11,6 @@
   <header>
     <h1>AbilityChain Wallet (PZQQET-0)</h1>
 
-    <!-- AUTH BUTTONS -->
     <div style="margin-top:20px;">
       <button data-auth="login" id="btn-login">Login / Register</button>
       <button data-auth="settings" id="btn-settings" style="display:none;">Settings</button>
@@ -20,18 +19,14 @@
   </header>
 
   <main>
-
-    <!-- WALLET UI (nur sichtbar wenn eingeloggt) -->
     <section id="wallet-ui" style="display:none;">
       <section id="balance"></section>
       <section id="mining"></section>
       <section id="history"></section>
       <section id="dex"></section>
     </section>
-
   </main>
 
-  <!-- WALLET ENGINE -->
   <script src="pzqqet-0_standard.js"></script>
   <script src="xp-mining.js"></script>
   <script src="time-token.js"></script>
@@ -44,11 +39,9 @@
   <script src="ui/components/tx-history.js"></script>
   <script src="ui/components/dex-buttons.js"></script>
 
-  <!-- AUTH LOGIK (nur EINMAL laden!) -->
   <script type="module">
     import { initAuthUI, isLoggedIn, logout } from "../global/auth.js";
 
-    // Popup laden + Buttons aktivieren
     initAuthUI();
 
     const btnLogin = document.getElementById("btn-login");
