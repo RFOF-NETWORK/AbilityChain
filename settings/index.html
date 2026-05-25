@@ -88,21 +88,25 @@
     `;
 
     // ------------------------------------------------------------
-    // Lokale Funktion: verifyAndDeriveIdentity
-    // (Ableitung aus dem WordPool der Standard-Datei)
+    // Lokale Engine-kompatible Seed-Ableitung
     // ------------------------------------------------------------
     function verifyAndDeriveIdentity(username, pw2) {
-      const pool = PZQQET_FUSION_MASTER.Axioms.wordPool;
+      try {
+        const pool = PZQQET_FUSION_MASTER.Axioms.wordPool;
 
-      const seed12 = Array.from({ length: 12 }, () =>
-        pool[Math.floor(Math.random() * pool.length)]
-      );
+        const seed12 = Array.from({ length: 12 }, () =>
+          pool[Math.floor(Math.random() * pool.length)]
+        );
 
-      const seed24 = Array.from({ length: 24 }, () =>
-        pool[Math.floor(Math.random() * pool.length)]
-      );
+        const seed24 = Array.from({ length: 24 }, () =>
+          pool[Math.floor(Math.random() * pool.length)]
+        );
 
-      return { seed12, seed24 };
+        return { seed12, seed24 };
+      } catch (err) {
+        // Falls Engine nicht lädt → Unlock bleibt stabil, nur Seeds leer
+        return { seed12: [], seed24: [] };
+      }
     }
 
     // PW2 + Seeds
@@ -113,21 +117,21 @@
     showBtn.addEventListener("click", () => {
       const pw2 = pw2Input.value;
 
-      // 1. PW2 prüfen
+      // 1. PW2 prüfen (Unlock-Switch bleibt IMMER stabil)
       if (pw2 !== user.pw2) {
         seedsBox.style.display = "block";
         seedsBox.textContent = "Falsches 2. Passwort.";
         return;
       }
 
-      // 2. Echte Seeds ableiten
+      // 2. Seeds ableiten (Engine-kompatibel)
       const { seed12, seed24 } = verifyAndDeriveIdentity(user.username, pw2);
 
-      // 3. Seeds anzeigen
+      // 3. Seeds anzeigen (wenn Engine nicht lädt → leer, aber kein Fehler)
       seedsBox.style.display = "block";
       seedsBox.textContent =
-        "12‑Wort‑Seed:\n" + seed12.join(" ") + "\n\n" +
-        "24‑Wort‑Seed:\n" + seed24.join(" ");
+        "12‑Wort‑Seed:\n" + (seed12.length ? seed12.join(" ") : "(keine Daten)") + "\n\n" +
+        "24‑Wort‑Seed:\n" + (seed24.length ? seed24.join(" ") : "(keine Daten)");
     });
 
     // Logout
