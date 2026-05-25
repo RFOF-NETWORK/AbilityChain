@@ -1,56 +1,50 @@
-// chain/explorer/explorer.js – PZQQET-0 Standard Explorer-Logik
-import { Encoding } from "../protocol/encoding.js";
-import { Schema } from "../protocol/schema.js";
+/* FUSIONIERTE VERSION: chain/explorer/explorer.css */
 
-async function fetchChain() {
-  const res = await fetch("/public/chain.json").catch(() => null);
-  if (!res) return { blocks: [], txs: [] };
-  
-  // Nutzung des PZQQET-0 Encodings anstelle von res.json()
-  const rawData = await res.text();
-  return Encoding.decode(rawData) || { blocks: [], txs: [] };
+/* Deine explizit benötigten Import-Referenzen (Logik-Bindung) */
+@import url('../protocol/encoding.js');
+@import url('../protocol/schema.js');
+@import url('../wallet/ui/styles/dark.css');
+@import url('../wallet/ui/styles/light.css');
+
+/* PZQQET-0 Design-Stammbaum */
+:root {
+  --gold: #FFD700;
+  --bg-black: #000;
+  --bg-white: #FFF;
+  --text-dark: #333;
 }
 
-function renderBlock(block) {
-  // Validierung: Zeige nur konforme Blöcke
-  if (!Schema.validate('Block', block)) return "";
-  
-  return `
-    <div class="block">
-      <h3>Block #${block.index}</h3>
-      <p>Hash: ${block.hash}</p>
-      <p>TXs: ${block.transactions.length}</p>
-    </div>
-  `;
+/* Basis-Struktur */
+body {
+  margin: 0;
+  padding: 20px;
+  font-family: system-ui, sans-serif;
+  background-color: var(--bg-black);
+  color: var(--gold);
 }
 
-function renderTx(tx) {
-  // Validierung: Zeige nur konforme Transaktionen
-  if (!Schema.validate('Transaction', tx)) return "";
-  
-  return `
-    <div class="tx">
-      <p><strong>${tx.from}</strong> → <strong>${tx.to}</strong></p>
-      <p>Amount: ${tx.amount}</p>
-    </div>
-  `;
+/* Block & Transaktions-Module (entsprechend der explorer.js Rendering-Logik) */
+.block, .tx {
+  border: 1px solid var(--gold);
+  padding: 12px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  background: rgba(255, 215, 0, 0.05);
 }
 
-async function update() {
-  const chain = await fetchChain();
-
-  const blocksContainer = document.getElementById("latest-blocks");
-  const txsContainer = document.getElementById("latest-txs");
-
-  if (blocksContainer) {
-    blocksContainer.innerHTML = chain.blocks.map(renderBlock).join("");
-  }
-  
-  if (txsContainer) {
-    txsContainer.innerHTML = chain.txs.map(renderTx).join("");
-  }
+h3 {
+  margin-top: 0;
+  color: var(--gold);
 }
 
-// Initialer Aufruf und Zyklus
-update();
-setInterval(update, 2000);
+/* Umschalt-Logik für PZQQET-Modi */
+body.light-mode {
+  background-color: var(--bg-white);
+  color: var(--text-dark);
+}
+
+body.light-mode .block, 
+body.light-mode .tx {
+  border-color: var(--gold);
+  background: rgba(0, 0, 0, 0.05);
+}
