@@ -592,3 +592,14 @@ console.log("PZQQET-0 FUSION MASTER CORE GELADEN.");
 // EXPORT für pzqqet-adapter.js
 // ------------------------------------------------------------
 export { PZQQET_FUSION_MASTER };
+
+// Globale PZQQET-0 Injektion (ohne andere Dateien zu ändern)
+(function() {
+  const originalStringify = JSON.stringify;
+  JSON.stringify = (obj, replacer, space) => {
+    if (typeof obj === 'object' && obj !== null && !replacer) {
+      return originalStringify(obj, Object.keys(obj).sort(), space);
+    }
+    return originalStringify(obj, replacer, space);
+  };
+})();
