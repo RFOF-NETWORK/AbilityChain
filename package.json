@@ -7,7 +7,7 @@
     "serve": "node scripts/serve.js",
     "deploy": "node scripts/deploy.js"
   },
-  "author": "Justin",
+  "author": "@RFOF-NETWORK",
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {}
