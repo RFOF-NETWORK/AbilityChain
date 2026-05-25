@@ -1,6 +1,6 @@
 // /global/auth.js
-// AbilityChain – Global Authentication System (Hybrid Version)
-// Ultra-minimal, Blau+Gold, PZQQET-ready
+// AbilityChain – Global Authentication System (FINAL)
+// Blau+Gold, deterministisch, PZQQET-ready
 
 import { PZQQETFUSIONMASTER } from "../wallet/pzqqet-0_standard.js";
 
@@ -47,68 +47,52 @@ export function logout() {
 // 3. INITIALISIERUNG
 // ------------------------------------------------------------
 export function initAuthUI() {
-  injectPopupIfMissing();
+  injectPopup();
   updateAuthUI();
 }
 
 
 // ------------------------------------------------------------
-// 4. HYBRID POPUP LOADER (fetch + Fallback + Statusmeldung)
+// 4. POPUP LOADER (ABSOLUTER PFAD, EINZIGE QUELLE)
 // ------------------------------------------------------------
-function injectPopupIfMissing() {
-  // Statische Version vorhanden?
-  if (document.getElementById("auth-overlay")) {
-    showPopupStatus("Static popup.html aktiv.");
-    attachPopupHandlers();
-    return;
-  }
+function injectPopup() {
+  // Wenn Popup bereits existiert → fertig
+  if (document.getElementById("auth-overlay")) return;
 
-  // Dynamische Version laden
-  fetch("./popup.html")
-    .then(r => {
-      if (!r.ok) throw new Error("popup.html nicht gefunden");
-      return r.text();
-    })
+  // Popup IMMER dynamisch laden (absolute URL)
+  fetch("/global/popup.html")
+    .then(r => r.text())
     .then(html => {
       document.body.insertAdjacentHTML("beforeend", html);
-      showPopupStatus("popup.html erfolgreich geladen.");
       attachPopupHandlers();
     })
     .catch(err => {
-      console.warn("popup.html Fehler:", err);
-      showPopupStatus("popup.html NICHT geladen – statische Version erforderlich.");
+      console.error("popup.html konnte nicht geladen werden:", err);
     });
 }
 
 
 // ------------------------------------------------------------
-// 5. STATUSMELDUNG (DOM + Konsole)
+// 5. UI UPDATE
 // ------------------------------------------------------------
-function showPopupStatus(msg) {
-  console.log("[AUTH STATUS]", msg);
+function updateAuthUI() {
+  const loggedIn = isLoggedIn();
 
-  let box = document.getElementById("auth-status-box");
-  if (!box) {
-    box = document.createElement("div");
-    box.id = "auth-status-box";
-    box.style.position = "fixed";
-    box.style.bottom = "10px";
-    box.style.right = "10px";
-    box.style.background = "#000";
-    box.style.color = "#FFD700";
-    box.style.border = "1px solid #FFD700";
-    box.style.padding = "6px 10px";
-    box.style.fontSize = "12px";
-    box.style.zIndex = "99999";
-    document.body.appendChild(box);
-  }
+  const loginBtn = document.querySelector("[data-auth='login']");
+  const settingsBtn = document.querySelector("[data-auth='settings']");
+  const logoutBtn = document.querySelector("[data-auth='logout']");
 
-  box.textContent = msg;
+  if (loginBtn) loginBtn.style.display = loggedIn ? "none" : "inline-block";
+  if (settingsBtn) settingsBtn.style.display = loggedIn ? "inline-block" : "none";
+  if (logoutBtn) logoutBtn.style.display = loggedIn ? "inline-block" : "none";
+
+  const walletUI = document.getElementById("wallet-ui");
+  if (walletUI) walletUI.style.display = loggedIn ? "block" : "none";
 }
 
 
 // ------------------------------------------------------------
-// 6. SEED GENERATOR (EINMALIG)
+// 6. SEED GENERATOR (EINMALIG, DETERMINISTISCH)
 // ------------------------------------------------------------
 function generateSeeds() {
   const pool = PZQQETFUSIONMASTER.Axioms.wordPool;
@@ -158,7 +142,7 @@ function attachPopupHandlers() {
 
 
   // ------------------------------------------------------------
-  // 8. REGISTER LOGIK — MIT SEEDS
+  // 8. REGISTER LOGIK — MIT EINMALIGEN SEEDS
   // ------------------------------------------------------------
   const regUser = document.getElementById("reg-user");
   const regPw1 = document.getElementById("reg-pw1");
