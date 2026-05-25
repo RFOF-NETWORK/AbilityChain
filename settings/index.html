@@ -69,6 +69,12 @@
       font-size: 13px;
       text-align: center;
     }
+
+    #seed-error {
+      color: #FF4444;
+      margin-top: 10px;
+      min-height: 20px;
+    }
   </style>
 </head>
 
@@ -83,18 +89,20 @@
     <input id="pw2-input" type="password" maxlength="4" placeholder="2. Passwort (4 Zeichen)">
     <button id="show-seeds-btn">Seeds anzeigen</button>
 
+    <!-- FEHLERMELDUNG (nur wenn PW2 falsch) -->
+    <div id="seed-error"></div>
+
+    <!-- SEED-BEREICH (nur wenn PW2 richtig) -->
     <div id="seed-container" style="display:none;">
 
       <div class="seed-section">
         <h4>12‑Wort‑Seed</h4>
         <div id="seed12-grid" class="seed-grid"></div>
-        <button id="copy12">Kopieren</button>
       </div>
 
       <div class="seed-section">
         <h4>24‑Wort‑Seed</h4>
         <div id="seed24-grid" class="seed-grid"></div>
-        <button id="copy24">Kopieren</button>
       </div>
 
     </div>
@@ -139,35 +147,30 @@
     const seedContainer = document.getElementById("seed-container");
     const seed12Grid = document.getElementById("seed12-grid");
     const seed24Grid = document.getElementById("seed24-grid");
+    const seedError = document.getElementById("seed-error");
     const showBtn = document.getElementById("show-seeds-btn");
-
-    let seed12 = [];
-    let seed24 = [];
 
     showBtn.addEventListener("click", () => {
       const pw2 = pw2Input.value;
 
+      // Fehlertext IMMER zuerst leeren
+      seedError.textContent = "";
+      seedContainer.style.display = "none";
+
+      // Wenn PW2 falsch → NUR dann Fehler anzeigen
       if (pw2 !== user.pw2) {
-        seedContainer.style.display = "block";
-        seedContainer.innerHTML = "<p>Falsches 2. Passwort.</p>";
+        seedError.textContent = "Falsches 2. Passwort.";
         return;
       }
 
+      // Wenn PW2 richtig → Seeds anzeigen
       const result = verifyAndDeriveIdentity(user.username, pw2);
-      seed12 = result.seed12;
-      seed24 = result.seed24;
+
+      seed12Grid.innerHTML = result.seed12.map(w => `<div>${w}</div>`).join("");
+      seed24Grid.innerHTML = result.seed24.map(w => `<div>${w}</div>`).join("");
 
       seedContainer.style.display = "block";
-      seed12Grid.innerHTML = seed12.map(w => `<div>${w}</div>`).join("");
-      seed24Grid.innerHTML = seed24.map(w => `<div>${w}</div>`).join("");
     });
-
-    function copySeed(words) {
-      if (words.length) navigator.clipboard.writeText(words.join(" "));
-    }
-
-    document.getElementById("copy12").addEventListener("click", () => copySeed(seed12));
-    document.getElementById("copy24").addEventListener("click", () => copySeed(seed24));
 
     document.getElementById("logout-btn").addEventListener("click", () => {
       logout();
