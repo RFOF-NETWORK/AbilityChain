@@ -1,26 +1,32 @@
 // /global/auth.js
-// AbilityChain – Global Authentication System (FINAL)
-// Blau+Gold, deterministisch, PZQQET-ready
+// AbilityChain – Global Authentication System (FINAL FIXED PATH)
 
 import { PZQQETFUSIONMASTER } from "../wallet/pzqqet-0_standard.js";
 
 // ------------------------------------------------------------
-// 1. GLOBAL STORAGE KEY
+// DYNAMISCHER PFAD ZU popup.html (funktioniert überall!)
+// ------------------------------------------------------------
+function resolvePopupPath() {
+  // aktueller Pfad, z.B. /RFOF-GOLDEN-AbilityChain/wallet/index.html
+  const path = window.location.pathname.split("/");
+
+  // entferne letzte Datei (index.html)
+  path.pop();
+
+  // gehe eine Ebene hoch und füge global/popup.html an
+  return path.join("/") + "/../global/popup.html";
+}
+
+
+// ------------------------------------------------------------
+// USER SESSION
 // ------------------------------------------------------------
 const ABILITY_USER_KEY = "ability.user";
 
-
-// ------------------------------------------------------------
-// 2. USER SESSION HANDLING
-// ------------------------------------------------------------
 export function getCurrentUser() {
   const raw = localStorage.getItem(ABILITY_USER_KEY);
   if (!raw) return null;
-  try {
-    return JSON.parse(raw);
-  } catch {
-    return null;
-  }
+  try { return JSON.parse(raw); } catch { return null; }
 }
 
 export function isLoggedIn() {
@@ -44,7 +50,7 @@ export function logout() {
 
 
 // ------------------------------------------------------------
-// 3. INITIALISIERUNG
+// INITIALISIERUNG
 // ------------------------------------------------------------
 export function initAuthUI() {
   injectPopup();
@@ -53,27 +59,25 @@ export function initAuthUI() {
 
 
 // ------------------------------------------------------------
-// 4. POPUP LOADER (ABSOLUTER PFAD, EINZIGE QUELLE)
+// POPUP LOADER (DYNAMISCHER PFAD)
 // ------------------------------------------------------------
 function injectPopup() {
-  // Wenn Popup bereits existiert → fertig
   if (document.getElementById("auth-overlay")) return;
 
-  // Popup IMMER dynamisch laden (absolute URL)
-  fetch("/global/popup.html")
+  const popupPath = resolvePopupPath();
+
+  fetch(popupPath)
     .then(r => r.text())
     .then(html => {
       document.body.insertAdjacentHTML("beforeend", html);
       attachPopupHandlers();
     })
-    .catch(err => {
-      console.error("popup.html konnte nicht geladen werden:", err);
-    });
+    .catch(err => console.error("popup.html konnte nicht geladen werden:", err));
 }
 
 
 // ------------------------------------------------------------
-// 5. UI UPDATE
+// UI UPDATE
 // ------------------------------------------------------------
 function updateAuthUI() {
   const loggedIn = isLoggedIn();
@@ -92,7 +96,7 @@ function updateAuthUI() {
 
 
 // ------------------------------------------------------------
-// 6. SEED GENERATOR (EINMALIG, DETERMINISTISCH)
+// SEED GENERATOR (EINMALIG)
 // ------------------------------------------------------------
 function generateSeeds() {
   const pool = PZQQETFUSIONMASTER.Axioms.wordPool;
@@ -110,7 +114,7 @@ function generateSeeds() {
 
 
 // ------------------------------------------------------------
-// 7. POPUP LOGIK
+// POPUP LOGIK
 // ------------------------------------------------------------
 function attachPopupHandlers() {
   const overlay = document.getElementById("auth-overlay");
@@ -142,7 +146,7 @@ function attachPopupHandlers() {
 
 
   // ------------------------------------------------------------
-  // 8. REGISTER LOGIK — MIT EINMALIGEN SEEDS
+  // REGISTER
   // ------------------------------------------------------------
   const regUser = document.getElementById("reg-user");
   const regPw1 = document.getElementById("reg-pw1");
@@ -161,7 +165,6 @@ function attachPopupHandlers() {
         return;
       }
 
-      // EINMALIGE SEED GENERIERUNG
       const { seed12, seed24 } = generateSeeds();
 
       const user = {
@@ -181,7 +184,7 @@ function attachPopupHandlers() {
 
 
   // ------------------------------------------------------------
-  // 9. LOGIN LOGIK
+  // LOGIN
   // ------------------------------------------------------------
   const loginUser = document.getElementById("login-user");
   const loginPw1 = document.getElementById("login-pw1");
