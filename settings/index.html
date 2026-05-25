@@ -2,168 +2,129 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title>AbilityChain Settings</title>
+  <title>AbilityChain – Settings</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
     body {
-      margin: 0;
       background: #000;
       color: #FFD700;
       font-family: system-ui, sans-serif;
-      text-align: center;
-      padding-top: 60px;
+      margin: 0;
+      padding: 20px;
     }
 
-    .box {
-      display: inline-block;
+    h1 {
+      margin-top: 0;
+      color: #FFD700;
+    }
+
+    .section {
       border: 1px solid #FFD700;
-      padding: 20px;
-      border-radius: 8px;
-      min-width: 320px;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 6px;
+    }
+
+    .seed-box {
+      background: #111;
+      padding: 10px;
+      border: 1px solid #FFD700;
+      margin-top: 10px;
+      white-space: pre-wrap;
+      font-size: 14px;
     }
 
     button {
       background: #0055FF;
       color: #FFD700;
       border: none;
-      padding: 8px 14px;
-      margin: 6px;
+      padding: 8px 12px;
       cursor: pointer;
+      margin-top: 10px;
     }
 
     input {
+      width: 100%;
+      padding: 6px;
+      margin-top: 6px;
       background: #000;
       border: 1px solid #FFD700;
       color: #FFD700;
-      padding: 6px 8px;
-      width: 80%;
-      margin: 4px 0;
-    }
-
-    .seed-section {
-      margin-top: 14px;
-      border: 1px solid #FFD700;
-      border-radius: 6px;
-      padding: 10px;
-    }
-
-    .seed-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 6px;
-      max-height: 160px;
-      overflow-y: auto;
-      border: 1px solid #FFD700;
-      padding: 8px;
-      border-radius: 6px;
-      user-select: none;
-      touch-action: pan-y; /* Scroll fix */
-    }
-
-    .seed-grid div {
-      background: #000;
-      color: #FFD700;
-      border: 1px solid #FFD700;
-      border-radius: 4px;
-      padding: 4px;
-      font-size: 13px;
-      text-align: center;
-    }
-
-    #seed-error {
-      color: #FF4444;
-      margin-top: 10px;
-      min-height: 20px;
     }
   </style>
 </head>
 
 <body>
 
-  <div class="box">
-    <h1>Settings</h1>
+  <h1>Settings</h1>
 
-    <div id="settings-info"></div>
-
-    <h3>Seeds anzeigen</h3>
-    <input id="pw2-input" type="password" maxlength="4" placeholder="2. Passwort (4 Zeichen)">
-    <button id="show-seeds-btn">Seeds anzeigen</button>
-
-    <div id="seed-error"></div>
-
-    <div id="seed-container" style="display:none;">
-
-      <div class="seed-section">
-        <h4>12‑Wort‑Seed</h4>
-        <button id="copy12">Copy 12‑Wörter</button>
-        <div id="seed12-grid" class="seed-grid"></div>
-      </div>
-
-      <div class="seed-section">
-        <h4>24‑Wort‑Seed</h4>
-        <button id="copy24">Copy 24‑Wörter</button>
-        <div id="seed24-grid" class="seed-grid"></div>
-      </div>
-
-    </div>
-
-    <button id="logout-btn">Logout</button>
+  <!-- LOGIN / LOGOUT / SETTINGS BUTTONS -->
+  <div>
+    <button data-auth="login">Login</button>
+    <button data-auth="settings" style="display:none;">Settings</button>
+    <button data-auth="logout" style="display:none;">Logout</button>
   </div>
 
+
+  <!-- SEED ANZEIGE -->
+  <div class="section">
+    <h2>Seed Phrase</h2>
+
+    <p>Zum Anzeigen bitte dein 4‑stelliges PW2 eingeben:</p>
+    <input id="pw2-input" type="password" maxlength="4" placeholder="PW2">
+
+    <button id="show-seeds-btn">Seeds anzeigen</button>
+
+    <div id="seed-output" class="seed-box" style="display:none;"></div>
+  </div>
+
+
+  <!-- MASK ANZEIGE -->
+  <div class="section">
+    <h2>Mask</h2>
+    <div id="mask-output" class="seed-box"></div>
+  </div>
+
+
+  <!-- IMPORTS -->
   <script type="module">
-    import { getCurrentUser, isLoggedIn, logout } from "../global/auth.js";
+    import { getCurrentUser, initAuthUI } from "../global/auth.js";
 
-    if (!isLoggedIn()) {
-      window.location.href = "../index.html";
-    }
+    // AUTH INITIALISIEREN (lädt popup.html automatisch)
+    initAuthUI();
 
-    const user = getCurrentUser();
+    // SEED ANZEIGE
+    const btn = document.getElementById("show-seeds-btn");
+    const out = document.getElementById("seed-output");
+    const pw2 = document.getElementById("pw2-input");
 
-    document.getElementById("settings-info").innerHTML = `
-      <p><strong>User:</strong> ${user.username}</p>
-      <p><strong>Mask:</strong> ${user.mask}</p>
-    `;
-
-    const pw2Input = document.getElementById("pw2-input");
-    const seedContainer = document.getElementById("seed-container");
-    const seed12Grid = document.getElementById("seed12-grid");
-    const seed24Grid = document.getElementById("seed24-grid");
-    const seedError = document.getElementById("seed-error");
-
-    document.getElementById("show-seeds-btn").onclick = () => {
-      const pw2 = pw2Input.value;
-
-      seedError.textContent = "";
-      seedContainer.style.display = "none";
-
-      if (pw2 !== user.pw2) {
-        seedError.textContent = "Falsches 2. Passwort.";
+    btn.onclick = () => {
+      const user = getCurrentUser();
+      if (!user) {
+        out.style.display = "block";
+        out.textContent = "Nicht eingeloggt.";
         return;
       }
 
-      const seed12 = user.seed12 || [];
-      const seed24 = user.seed24 || [];
+      if (pw2.value !== user.pw2) {
+        out.style.display = "block";
+        out.textContent = "PW2 falsch.";
+        return;
+      }
 
-      seed12Grid.innerHTML = seed12.map(w => `<div>${w}</div>`).join("");
-      seed24Grid.innerHTML = seed24.map(w => `<div>${w}</div>`).join("");
-
-      seedContainer.style.display = "block";
+      out.style.display = "block";
+      out.textContent =
+        "12‑Wörter Seed:\n" +
+        user.seed12.join(" ") +
+        "\n\n24‑Wörter Seed:\n" +
+        user.seed24.join(" ");
     };
 
-    document.getElementById("copy12").onclick = () => {
-      const text = (user.seed12 || []).join(" ");
-      navigator.clipboard.writeText(text);
-    };
-
-    document.getElementById("copy24").onclick = () => {
-      const text = (user.seed24 || []).join(" ");
-      navigator.clipboard.writeText(text);
-    };
-
-    document.getElementById("logout-btn").onclick = () => {
-      logout();
-      window.location.href = "../index.html";
-    };
+    // MASK ANZEIGE
+    const maskOut = document.getElementById("mask-output");
+    const user = getCurrentUser();
+    maskOut.textContent = user ? user.mask : "Keine Maske (nicht eingeloggt)";
   </script>
 
 </body>
