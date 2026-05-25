@@ -40,6 +40,13 @@
       margin: 4px 0;
     }
 
+    .seed-section {
+      margin-top: 14px;
+      border: 1px solid #FFD700;
+      border-radius: 6px;
+      padding: 10px;
+    }
+
     .seed-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -49,7 +56,8 @@
       border: 1px solid #FFD700;
       padding: 8px;
       border-radius: 6px;
-      user-select: none; /* blockiert Markieren */
+      user-select: none;
+      touch-action: none;
     }
 
     .seed-grid div {
@@ -59,6 +67,7 @@
       border-radius: 4px;
       padding: 4px;
       font-size: 13px;
+      text-align: center;
     }
   </style>
 </head>
@@ -75,13 +84,19 @@
     <button id="show-seeds-btn">Seeds anzeigen</button>
 
     <div id="seed-container" style="display:none;">
-      <h4>12‑Wort‑Seed</h4>
-      <div id="seed12" class="seed-grid"></div>
-      <button id="copy12">Kopieren</button>
 
-      <h4>24‑Wort‑Seed</h4>
-      <div id="seed24" class="seed-grid"></div>
-      <button id="copy24">Kopieren</button>
+      <div class="seed-section">
+        <h4>12‑Wort‑Seed</h4>
+        <div id="seed12-grid" class="seed-grid"></div>
+        <button id="copy12">Kopieren</button>
+      </div>
+
+      <div class="seed-section">
+        <h4>24‑Wort‑Seed</h4>
+        <div id="seed24-grid" class="seed-grid"></div>
+        <button id="copy24">Kopieren</button>
+      </div>
+
     </div>
 
     <button id="logout-btn">Logout</button>
@@ -105,12 +120,15 @@
     function verifyAndDeriveIdentity(username, pw2) {
       try {
         const pool = PZQQET_FUSION_MASTER.Axioms.wordPool;
+
         const seed12 = Array.from({ length: 12 }, () =>
           pool[Math.floor(Math.random() * pool.length)]
         );
+
         const seed24 = Array.from({ length: 24 }, () =>
           pool[Math.floor(Math.random() * pool.length)]
         );
+
         return { seed12, seed24 };
       } catch {
         return { seed12: [], seed24: [] };
@@ -119,8 +137,8 @@
 
     const pw2Input = document.getElementById("pw2-input");
     const seedContainer = document.getElementById("seed-container");
-    const seed12Grid = document.getElementById("seed12");
-    const seed24Grid = document.getElementById("seed24");
+    const seed12Grid = document.getElementById("seed12-grid");
+    const seed24Grid = document.getElementById("seed24-grid");
     const showBtn = document.getElementById("show-seeds-btn");
 
     let seed12 = [];
