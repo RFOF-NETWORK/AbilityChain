@@ -587,3 +587,8 @@ PZQQET_FUSION_MASTER.Operative_Bindeglieder = {
  */
 
 console.log("PZQQET-0 FUSION MASTER CORE GELADEN.");
+
+// ------------------------------------------------------------
+// EXPORT für pzqqet-adapter.js
+// ------------------------------------------------------------
+export { PZQQET_FUSION_MASTER };
