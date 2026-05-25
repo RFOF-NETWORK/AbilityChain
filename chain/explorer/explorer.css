@@ -1,12 +1,20 @@
-// AbilityChain Explorer – zeigt Blöcke & Transaktionen
+// chain/explorer/explorer.js – PZQQET-0 Standard Explorer-Logik
+import { Encoding } from "../protocol/encoding.js";
+import { Schema } from "../protocol/schema.js";
 
 async function fetchChain() {
   const res = await fetch("/public/chain.json").catch(() => null);
   if (!res) return { blocks: [], txs: [] };
-  return await res.json();
+  
+  // Nutzung des PZQQET-0 Encodings anstelle von res.json()
+  const rawData = await res.text();
+  return Encoding.decode(rawData) || { blocks: [], txs: [] };
 }
 
 function renderBlock(block) {
+  // Validierung: Zeige nur konforme Blöcke
+  if (!Schema.validate('Block', block)) return "";
+  
   return `
     <div class="block">
       <h3>Block #${block.index}</h3>
@@ -17,6 +25,9 @@ function renderBlock(block) {
 }
 
 function renderTx(tx) {
+  // Validierung: Zeige nur konforme Transaktionen
+  if (!Schema.validate('Transaction', tx)) return "";
+  
   return `
     <div class="tx">
       <p><strong>${tx.from}</strong> → <strong>${tx.to}</strong></p>
@@ -28,12 +39,18 @@ function renderTx(tx) {
 async function update() {
   const chain = await fetchChain();
 
-  document.getElementById("latest-blocks").innerHTML =
-    chain.blocks.map(renderBlock).join("");
+  const blocksContainer = document.getElementById("latest-blocks");
+  const txsContainer = document.getElementById("latest-txs");
 
-  document.getElementById("latest-txs").innerHTML =
-    chain.txs.map(renderTx).join("");
+  if (blocksContainer) {
+    blocksContainer.innerHTML = chain.blocks.map(renderBlock).join("");
+  }
+  
+  if (txsContainer) {
+    txsContainer.innerHTML = chain.txs.map(renderTx).join("");
+  }
 }
 
+// Initialer Aufruf und Zyklus
 update();
 setInterval(update, 2000);
