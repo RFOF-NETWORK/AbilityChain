@@ -1,35 +1,48 @@
 import http from "node:http";
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, existsSync, statSync } from "node:fs";
 import { extname, join } from "node:path";
 
 const PORT = 3000;
+// Einfacher In-Memory Cache für die chain.json, um IO-Locks zu vermeiden
+let cachedChain = null;
 
 const MIME = {
   ".html": "text/html",
   ".js": "text/javascript",
   ".css": "text/css",
   ".svg": "image/svg+xml",
-  ".json": "application/json",
-  ".ico": "image/x-icon"
+  ".json": "application/json"
 };
 
-http
-  .createServer((req, res) => {
-    const urlPath = req.url === "/" ? "/index.html" : req.url;
-    const filePath = join(process.cwd(), urlPath.replace(/^\//, ""));
+const server = http.createServer((req, res) => {
+  // Zeit-Synchronisations-Header für PZQQET-Standard
+  res.setHeader("X-PZQQET-Timestamp", Date.now().toString());
 
-    if (!existsSync(filePath)) {
-      res.writeHead(404);
-      res.end("Not found");
-      return;
-    }
+  const urlPath = req.url === "/" ? "/index.html" : req.url;
+  const filePath = join(process.cwd(), urlPath);
 
+  if (!existsSync(filePath)) {
+    res.writeHead(404);
+    res.end("Not found");
+    return;
+  }
+
+  // Atomares Lesen der chain.json über Cache
+  if (extname(filePath) === ".json" && urlPath.includes("chain.json")) {
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(cachedChain || readFileSync(filePath));
+  } else {
     const data = readFileSync(filePath);
-    const type = MIME[extname(filePath)] || "application/octet-stream";
-
-    res.writeHead(200, { "Content-Type": type });
+    res.writeHead(200, { "Content-Type": MIME[extname(filePath)] || "application/octet-stream" });
     res.end(data);
-  })
-  .listen(PORT, () => {
-    console.log(Serving on http://localhost:${PORT});
-  });
+  }
+});
+
+// Update-Funktion für den Cache (wird vom Konsens aufgerufen)
+export const updateCache = (newData) => {
+  cachedChain = JSON.stringify(newData);
+};
+
+server.listen(PORT, () => {
+  console.log(`PZQQET-Gateway läuft auf http://localhost:${PORT}`);
+});
