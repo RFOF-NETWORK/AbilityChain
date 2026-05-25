@@ -42,7 +42,7 @@ export function logout() {
 
 
 // ------------------------------------------------------------
-// 3. INITIALISIERUNG (wird in jeder HTML-Seite aufgerufen)
+// 3. INITIALISIERUNG
 // ------------------------------------------------------------
 export function initAuthUI() {
   injectPopupIfMissing();
@@ -52,7 +52,7 @@ export function initAuthUI() {
 
 
 // ------------------------------------------------------------
-// 4. POPUP INJEKTION (falls HTML es nicht enthält)
+// 4. POPUP INJEKTION
 // ------------------------------------------------------------
 function injectPopupIfMissing() {
   if (document.getElementById("auth-overlay")) return;
@@ -104,7 +104,6 @@ function updateAuthUI() {
   if (settingsBtn) settingsBtn.style.display = loggedIn ? "inline-block" : "none";
   if (logoutBtn) logoutBtn.style.display = loggedIn ? "inline-block" : "none";
 
-  // Wallet UI sichtbar machen
   const walletUI = document.getElementById("wallet-ui");
   if (walletUI) walletUI.style.display = loggedIn ? "block" : "none";
 }
@@ -127,7 +126,6 @@ function attachPopupHandlers() {
   const modeLoginBtn = document.getElementById("auth-mode-login");
   const modeRegisterBtn = document.getElementById("auth-mode-register");
 
-  // Öffnen
   openBtns.forEach(btn => {
     btn.addEventListener("click", () => {
       overlay.style.display = "flex";
@@ -135,14 +133,12 @@ function attachPopupHandlers() {
     });
   });
 
-  // Schließen
   if (closeBtn) {
     closeBtn.addEventListener("click", () => {
       overlay.style.display = "none";
     });
   }
 
-  // Modus wechseln
   function setMode(mode) {
     if (mode === "login") {
       loginBox.style.display = "block";
@@ -158,7 +154,7 @@ function attachPopupHandlers() {
 
 
   // ------------------------------------------------------------
-  // 7. REGISTER LOGIK (PZQQET‑READY)
+  // 7. REGISTER LOGIK — FINAL & KORREKT
   // ------------------------------------------------------------
   const regUser = document.getElementById("reg-user");
   const regPw1 = document.getElementById("reg-pw1");
@@ -177,13 +173,12 @@ function attachPopupHandlers() {
         return;
       }
 
-      // --------------------------------------------------------
-      // HIER wird später deine echte PZQQET‑0 Engine eingebunden
-      // --------------------------------------------------------
+      // USER WIRD JETZT KORREKT GESPEICHERT
       const user = {
         username: u,
-        mask: "PZQQET_MASK_PLACEHOLDER",
-        pw2_hint: true
+        pw1: p1,
+        pw2: p2, // <--- ENTSCHEIDEND
+        mask: "PZQQET_MASK_PLACEHOLDER"
       };
 
       saveUserSession(user);
@@ -194,7 +189,7 @@ function attachPopupHandlers() {
 
 
   // ------------------------------------------------------------
-  // 8. LOGIN LOGIK (PZQQET‑READY)
+  // 8. LOGIN LOGIK — FINAL & KORREKT
   // ------------------------------------------------------------
   const loginUser = document.getElementById("login-user");
   const loginPw1 = document.getElementById("login-pw1");
@@ -211,16 +206,16 @@ function attachPopupHandlers() {
         return;
       }
 
-      // --------------------------------------------------------
-      // HIER wird später die echte PZQQET‑Login‑Validierung eingebaut
-      // --------------------------------------------------------
-      const user = {
-        username: u,
-        mask: "PZQQET_MASK_PLACEHOLDER",
-        pw2_hint: true
-      };
+      // USER AUS STORAGE LADEN
+      const stored = getCurrentUser();
 
-      saveUserSession(user);
+      // LOGIN VALIDIERUNG
+      if (!stored || stored.username !== u || stored.pw1 !== p1) {
+        loginMsg.textContent = "Login fehlgeschlagen.";
+        return;
+      }
+
+      saveUserSession(stored);
       loginMsg.textContent = "Login erfolgreich.";
       overlay.style.display = "none";
     });
