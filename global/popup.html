@@ -1,86 +1,28 @@
 <!-- /global/popup.html -->
-<div id="auth-overlay" style="display:none;">
-  <div id="auth-popup">
-    <button id="auth-close">×</button>
-    <h2 style="margin-top:0;">AbilityChain Login</h2>
-
-    <div style="margin-bottom:10px;">
+<div id="auth-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:9999; align-items:center; justify-content:center;">
+  <div id="auth-popup" style="background:#000; border:2px solid #FFD700; padding:20px; width:300px; color:#FFD700; position:relative;">
+    <button id="auth-close" style="position:absolute; top:5px; right:5px; background:transparent; border:none; color:#FFD700; cursor:pointer;">X</button>
+    
+    <h2>AbilityChain</h2>
+    
+    <div style="margin-bottom:15px;">
       <button id="auth-mode-login">Login</button>
       <button id="auth-mode-register">Register</button>
     </div>
 
-    <!-- LOGIN -->
     <div id="auth-login-box">
-      <input id="login-user" placeholder="Username">
-      <input id="login-pw1" type="password" maxlength="16" placeholder="Passwort (16 Zeichen)">
-      <button id="login-btn">Login</button>
-      <div id="login-msg" class="auth-msg"></div>
+      <input id="login-user" placeholder="Username" style="width:100%; margin-bottom:10px;">
+      <input id="login-pw1" type="password" maxlength="16" placeholder="PW (16 Zeichen)" style="width:100%; margin-bottom:10px;">
+      <button id="login-btn" style="width:100%;">Login</button>
     </div>
 
-    <!-- REGISTER -->
     <div id="auth-register-box" style="display:none;">
-      <input id="reg-user" placeholder="Username">
-      <input id="reg-pw1" type="password" maxlength="16" placeholder="Passwort (16 Zeichen)">
-      <input id="reg-pw2" type="password" maxlength="4" placeholder="2. Passwort (4 Zeichen)">
-      <button id="reg-btn">Account erstellen</button>
-      <div id="reg-msg" class="auth-msg"></div>
+      <input id="reg-user" placeholder="Username" style="width:100%; margin-bottom:10px;">
+      <input id="reg-pw1" type="password" maxlength="16" placeholder="PW (16 Zeichen)" style="width:100%; margin-bottom:10px;">
+      <input id="reg-pw2" type="password" maxlength="4" placeholder="Code (4 Zeichen)" style="width:100%; margin-bottom:10px;">
+      <button id="reg-btn" style="width:100%;">Account erstellen</button>
     </div>
+    
+    <div id="reg-msg" style="font-size:12px; margin-top:10px;"></div>
   </div>
 </div>
-
-<style>
-  #auth-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.6);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-  }
-
-  #auth-popup {
-    background: #000;
-    border: 2px solid #FFD700;
-    border-radius: 8px;
-    padding: 20px;
-    width: 300px;
-    color: #FFD700;
-    font-family: system-ui, sans-serif;
-    position: relative;
-  }
-
-  #auth-popup input {
-    width: 100%;
-    margin: 5px 0;
-    padding: 6px 8px;
-    background: #000;
-    border: 1px solid #FFD700;
-    color: #FFD700;
-  }
-
-  #auth-popup button {
-    background: #0055FF;
-    color: #FFD700;
-    border: none;
-    padding: 6px 10px;
-    margin: 4px 2px;
-    cursor: pointer;
-  }
-
-  #auth-close {
-    position: absolute;
-    top: 6px;
-    right: 6px;
-    background: transparent;
-    border: none;
-    color: #FFD700;
-    font-size: 16px;
-    cursor: pointer;
-  }
-
-  .auth-msg {
-    margin-top: 6px;
-    font-size: 12px;
-  }
-</style>
