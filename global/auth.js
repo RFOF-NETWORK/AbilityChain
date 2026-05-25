@@ -5,18 +5,22 @@ import { PZQQETFUSIONMASTER } from "../wallet/pzqqet-0_standard.js";
 
 const ABILITY_USER_KEY = "ability.user";
 
-// ---------------- PATH RESOLVER ----------------
+// ------------------------------------------------------------
+// DYNAMISCHER PFAD ZU popup.html (funktioniert überall!)
+// ------------------------------------------------------------
 function resolvePopupPath() {
-  // Projekt-Root bestimmen (alles bis zum letzten "/")
+  // Beispiel: /RFOF-GOLDEN-AbilityChain/wallet/index.html
   const parts = window.location.pathname.split("/");
-  parts.pop(); // index.html oder leeres Segment
-  const base = parts.join("/"); // z.B. /RFOF-GOLDEN-AbilityChain/wallet
+  parts.pop(); // index.html entfernen
+  const base = parts.join("/"); // /RFOF-GOLDEN-AbilityChain/wallet
 
-  // immer eine Ebene hoch, dann /global/popup.html
+  // eine Ebene hoch → /RFOF-GOLDEN-AbilityChain/global/popup.html
   return base + "/../global/popup.html";
 }
 
-// ---------------- SESSION ----------------
+// ------------------------------------------------------------
+// USER SESSION
+// ------------------------------------------------------------
 export function getCurrentUser() {
   const raw = localStorage.getItem(ABILITY_USER_KEY);
   if (!raw) return null;
@@ -42,13 +46,17 @@ export function logout() {
   window.location.reload();
 }
 
-// ---------------- INIT ----------------
+// ------------------------------------------------------------
+// INITIALISIERUNG
+// ------------------------------------------------------------
 export function initAuthUI() {
   injectPopup();
   updateAuthUI();
 }
 
-// ---------------- POPUP LOAD ----------------
+// ------------------------------------------------------------
+// POPUP LOADER
+// ------------------------------------------------------------
 function injectPopup() {
   if (document.getElementById("auth-overlay")) return;
 
@@ -63,7 +71,9 @@ function injectPopup() {
     .catch(err => console.error("popup.html konnte nicht geladen werden:", err));
 }
 
-// ---------------- UI UPDATE ----------------
+// ------------------------------------------------------------
+// UI UPDATE
+// ------------------------------------------------------------
 function updateAuthUI() {
   const loggedIn = isLoggedIn();
 
@@ -79,7 +89,9 @@ function updateAuthUI() {
   if (walletUI) walletUI.style.display = loggedIn ? "block" : "none";
 }
 
-// ---------------- SEEDS ----------------
+// ------------------------------------------------------------
+// SEED GENERATOR
+// ------------------------------------------------------------
 function generateSeeds() {
   const pool = PZQQETFUSIONMASTER.Axioms.wordPool;
 
@@ -94,7 +106,9 @@ function generateSeeds() {
   return { seed12, seed24 };
 }
 
-// ---------------- POPUP LOGIC ----------------
+// ------------------------------------------------------------
+// POPUP LOGIK
+// ------------------------------------------------------------
 function attachPopupHandlers() {
   const overlay = document.getElementById("auth-overlay");
   if (!overlay) return;
@@ -123,7 +137,9 @@ function attachPopupHandlers() {
     };
   });
 
+  // ------------------------------------------------------------
   // REGISTER
+  // ------------------------------------------------------------
   const regUser = document.getElementById("reg-user");
   const regPw1 = document.getElementById("reg-pw1");
   const regPw2 = document.getElementById("reg-pw2");
@@ -158,7 +174,9 @@ function attachPopupHandlers() {
     };
   }
 
+  // ------------------------------------------------------------
   // LOGIN
+  // ------------------------------------------------------------
   const loginUser = document.getElementById("login-user");
   const loginPw1 = document.getElementById("login-pw1");
   const loginBtn = document.getElementById("login-btn");
