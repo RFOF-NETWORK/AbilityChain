@@ -57,6 +57,7 @@
       padding: 8px;
       border-radius: 6px;
       user-select: none;
+      touch-action: pan-y; /* SCROLL FIX */
     }
 
     .seed-item {
@@ -124,6 +125,7 @@
 
   <script type="module">
     import { getCurrentUser, isLoggedIn, logout } from "../global/auth.js";
+    import { PZQQETFUSIONMASTER } from "../wallet/pzqqet-0_standard.js";
 
     if (!isLoggedIn()) {
       window.location.href = "../index.html";
@@ -131,8 +133,7 @@
 
     const user = getCurrentUser();
 
-    const info = document.getElementById("settings-info");
-    info.innerHTML = `
+    document.getElementById("settings-info").innerHTML = `
       <p><strong>User:</strong> ${user.username}</p>
       <p><strong>Mask:</strong> ${user.mask}</p>
     `;
@@ -154,7 +155,6 @@
         return;
       }
 
-      // Seeds kommen aus dem User-Objekt (einmalig generiert)
       const seed12 = user.seed12 || [];
       const seed24 = user.seed24 || [];
 
