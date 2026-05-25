@@ -71,6 +71,7 @@
 
   <script type="module">
     import { getCurrentUser, isLoggedIn, logout } from "../global/auth.js";
+    import { verifyAndDeriveIdentity } from "../wallet/pzqqet-0_standard.js";
 
     // Wenn nicht eingeloggt → zurück zur Root
     if (!isLoggedIn()) {
@@ -94,22 +95,21 @@
     showBtn.addEventListener("click", () => {
       const pw2 = pw2Input.value;
 
-      if (pw2.length !== 4) {
+      // 1. PW2 prüfen
+      if (pw2 !== user.pw2) {
         seedsBox.style.display = "block";
         seedsBox.textContent = "Falsches 2. Passwort.";
         return;
       }
 
-      // --------------------------------------------------------
-      // HIER wird später die echte PZQQET‑Seed‑Generierung eingebaut
-      // --------------------------------------------------------
-      const seed12 = "word1 word2 word3 ... (12 Wörter)";
-      const seed24 = "word1 word2 word3 ... (24 Wörter)";
+      // 2. Echte Seeds aus PZQQET ableiten
+      const { seed12, seed24 } = verifyAndDeriveIdentity(user.username, pw2);
 
+      // 3. Seeds anzeigen
       seedsBox.style.display = "block";
       seedsBox.textContent =
-        "12‑Wort‑Seed:\n" + seed12 + "\n\n" +
-        "24‑Wort‑Seed:\n" + seed24;
+        "12‑Wort‑Seed:\n" + seed12.join(" ") + "\n\n" +
+        "24‑Wort‑Seed:\n" + seed24.join(" ");
     });
 
     // Logout
