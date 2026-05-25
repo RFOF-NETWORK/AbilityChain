@@ -1,28 +1,22 @@
 // /global/auth.js
-// AbilityChain – Global Authentication System (FINAL FIXED PATH)
+// AbilityChain – Global Authentication System (FINAL)
 
 import { PZQQETFUSIONMASTER } from "../wallet/pzqqet-0_standard.js";
 
-// ------------------------------------------------------------
-// DYNAMISCHER PFAD ZU popup.html (funktioniert überall!)
-// ------------------------------------------------------------
-function resolvePopupPath() {
-  // aktueller Pfad, z.B. /RFOF-GOLDEN-AbilityChain/wallet/index.html
-  const path = window.location.pathname.split("/");
-
-  // entferne letzte Datei (index.html)
-  path.pop();
-
-  // gehe eine Ebene hoch und füge global/popup.html an
-  return path.join("/") + "/../global/popup.html";
-}
-
-
-// ------------------------------------------------------------
-// USER SESSION
-// ------------------------------------------------------------
 const ABILITY_USER_KEY = "ability.user";
 
+// ---------------- PATH RESOLVER ----------------
+function resolvePopupPath() {
+  // Projekt-Root bestimmen (alles bis zum letzten "/")
+  const parts = window.location.pathname.split("/");
+  parts.pop(); // index.html oder leeres Segment
+  const base = parts.join("/"); // z.B. /RFOF-GOLDEN-AbilityChain/wallet
+
+  // immer eine Ebene hoch, dann /global/popup.html
+  return base + "/../global/popup.html";
+}
+
+// ---------------- SESSION ----------------
 export function getCurrentUser() {
   const raw = localStorage.getItem(ABILITY_USER_KEY);
   if (!raw) return null;
@@ -48,19 +42,13 @@ export function logout() {
   window.location.reload();
 }
 
-
-// ------------------------------------------------------------
-// INITIALISIERUNG
-// ------------------------------------------------------------
+// ---------------- INIT ----------------
 export function initAuthUI() {
   injectPopup();
   updateAuthUI();
 }
 
-
-// ------------------------------------------------------------
-// POPUP LOADER (DYNAMISCHER PFAD)
-// ------------------------------------------------------------
+// ---------------- POPUP LOAD ----------------
 function injectPopup() {
   if (document.getElementById("auth-overlay")) return;
 
@@ -75,10 +63,7 @@ function injectPopup() {
     .catch(err => console.error("popup.html konnte nicht geladen werden:", err));
 }
 
-
-// ------------------------------------------------------------
-// UI UPDATE
-// ------------------------------------------------------------
+// ---------------- UI UPDATE ----------------
 function updateAuthUI() {
   const loggedIn = isLoggedIn();
 
@@ -94,10 +79,7 @@ function updateAuthUI() {
   if (walletUI) walletUI.style.display = loggedIn ? "block" : "none";
 }
 
-
-// ------------------------------------------------------------
-// SEED GENERATOR (EINMALIG)
-// ------------------------------------------------------------
+// ---------------- SEEDS ----------------
 function generateSeeds() {
   const pool = PZQQETFUSIONMASTER.Axioms.wordPool;
 
@@ -112,10 +94,7 @@ function generateSeeds() {
   return { seed12, seed24 };
 }
 
-
-// ------------------------------------------------------------
-// POPUP LOGIK
-// ------------------------------------------------------------
+// ---------------- POPUP LOGIC ----------------
 function attachPopupHandlers() {
   const overlay = document.getElementById("auth-overlay");
   if (!overlay) return;
@@ -144,10 +123,7 @@ function attachPopupHandlers() {
     };
   });
 
-
-  // ------------------------------------------------------------
   // REGISTER
-  // ------------------------------------------------------------
   const regUser = document.getElementById("reg-user");
   const regPw1 = document.getElementById("reg-pw1");
   const regPw2 = document.getElementById("reg-pw2");
@@ -182,10 +158,7 @@ function attachPopupHandlers() {
     };
   }
 
-
-  // ------------------------------------------------------------
   // LOGIN
-  // ------------------------------------------------------------
   const loginUser = document.getElementById("login-user");
   const loginPw1 = document.getElementById("login-pw1");
   const loginBtn = document.getElementById("login-btn");
