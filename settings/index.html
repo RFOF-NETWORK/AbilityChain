@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <title>AbilityChain Settings</title>
+  <meta charset="UTF-8" />
+  <title>AbilityChain – Settings</title>
 
   <style>
     body {
@@ -10,25 +10,49 @@
       background: #000;
       color: #FFD700;
       font-family: system-ui, sans-serif;
-      text-align: center;
-      padding-top: 60px;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
     }
 
-    .box {
-      display: inline-block;
-      border: 1px solid #FFD700;
-      padding: 20px;
-      border-radius: 8px;
-      min-width: 320px;
+    /* HEADER / NAVIGATION */
+    header {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      padding: 14px 0;
+      border-bottom: 2px solid #FFD700;
+      background: #000;
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
 
-    button {
+    header button {
       background: #0055FF;
       color: #FFD700;
       border: none;
       padding: 8px 14px;
-      margin: 6px;
       cursor: pointer;
+      border-radius: 4px;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      overflow-y: auto;
+      padding: 40px 0;
+    }
+
+    .box {
+      border: 1px solid #FFD700;
+      padding: 20px;
+      border-radius: 8px;
+      width: 360px;
+      background: #000;
+      text-align: center;
     }
 
     input {
@@ -38,6 +62,16 @@
       padding: 6px 8px;
       width: 80%;
       margin: 4px 0;
+    }
+
+    button.action {
+      background: #0055FF;
+      color: #FFD700;
+      border: none;
+      padding: 8px 14px;
+      margin: 6px;
+      cursor: pointer;
+      border-radius: 4px;
     }
 
     .seed-section {
@@ -57,7 +91,6 @@
       padding: 8px;
       border-radius: 6px;
       user-select: none;
-      touch-action: none;
     }
 
     .seed-grid div {
@@ -80,102 +113,142 @@
 
 <body>
 
-  <div class="box">
-    <h1>Settings</h1>
+  <!-- NAVIGATION -->
+  <header>
+    <button id="nav-home">Home</button>
+    <button id="nav-wallet">Wallet</button>
+    <button id="nav-explorer">Explorer</button>
+    <button id="nav-logout">Logout</button>
+  </header>
 
-    <div id="settings-info"></div>
+  <main>
+    <div class="box">
+      <h1>Settings</h1>
 
-    <h3>Seeds anzeigen</h3>
-    <input id="pw2-input" type="password" maxlength="4" placeholder="2. Passwort (4 Zeichen)">
-    <button id="show-seeds-btn">Seeds anzeigen</button>
+      <div id="settings-info"></div>
 
-    <!-- FEHLERMELDUNG (nur wenn PW2 falsch) -->
-    <div id="seed-error"></div>
+      <h3>Seeds anzeigen</h3>
+      <input id="pw2-input" type="password" maxlength="4" placeholder="2. Passwort (4 Zeichen)">
+      <button class="action" id="show-seeds-btn">Seeds anzeigen</button>
 
-    <!-- SEED-BEREICH (nur wenn PW2 richtig) -->
-    <div id="seed-container" style="display:none;">
+      <div id="seed-error"></div>
 
-      <div class="seed-section">
-        <h4>12‑Wort‑Seed</h4>
-        <div id="seed12-grid" class="seed-grid"></div>
+      <div id="seed-container" style="display:none;">
+        <div class="seed-section">
+          <h4>12‑Wort‑Seed</h4>
+          <div id="seed12-grid" class="seed-grid"></div>
+        </div>
+
+        <div class="seed-section">
+          <h4>24‑Wort‑Seed</h4>
+          <div id="seed24-grid" class="seed-grid"></div>
+        </div>
       </div>
 
-      <div class="seed-section">
-        <h4>24‑Wort‑Seed</h4>
-        <div id="seed24-grid" class="seed-grid"></div>
-      </div>
+      <h3>Theme</h3>
+      <button class="action" id="theme-toggle">Dark / Light</button>
+
+      <h3>Account</h3>
+      <button class="action" id="pw2-change">PW2 ändern</button>
+      <button class="action" id="mask-refresh">Mask regenerieren</button>
 
     </div>
-
-    <button id="logout-btn">Logout</button>
-  </div>
+  </main>
 
   <script type="module">
-    import { getCurrentUser, isLoggedIn, logout } from "../global/auth.js";
+    import { getCurrentUser, isLoggedIn, logout, saveUser } from "../global/auth.js";
     import { PZQQET_FUSION_MASTER } from "../wallet/pzqqet-0_standard.js";
 
+    /* LOGIN CHECK */
     if (!isLoggedIn()) {
       window.location.href = "../index.html";
     }
 
     const user = getCurrentUser();
+
+    /* NAVIGATION */
+    document.getElementById("nav-home").onclick = () => window.location.href = "../index.html";
+    document.getElementById("nav-wallet").onclick = () => window.location.href = "../wallet/index.html";
+    document.getElementById("nav-explorer").onclick = () => window.location.href = "../chain/explorer/index.html";
+    document.getElementById("nav-logout").onclick = () => { logout(); window.location.href = "../index.html"; };
+
+    /* USER INFO */
     const info = document.getElementById("settings-info");
     info.innerHTML = `
       <p><strong>User:</strong> ${user.username}</p>
       <p><strong>Mask:</strong> ${user.mask}</p>
     `;
 
-    function verifyAndDeriveIdentity(username, pw2) {
-      try {
-        const pool = PZQQET_FUSION_MASTER.Axioms.wordPool;
+    /* DETERMINISTISCHE SEED-ABLEITUNG */
+    function deriveSeeds(username, pw1, pw2, mask) {
+      const pool = PZQQET_FUSION_MASTER.Axioms.wordPool;
 
-        const seed12 = Array.from({ length: 12 }, () =>
-          pool[Math.floor(Math.random() * pool.length)]
-        );
+      const base = username + pw1 + pw2 + mask;
+      let hash = 0;
 
-        const seed24 = Array.from({ length: 24 }, () =>
-          pool[Math.floor(Math.random() * pool.length)]
-        );
-
-        return { seed12, seed24 };
-      } catch {
-        return { seed12: [], seed24: [] };
+      for (let i = 0; i < base.length; i++) {
+        hash = (hash * 31 + base.charCodeAt(i)) % 999999;
       }
+
+      const seed12 = [];
+      const seed24 = [];
+
+      for (let i = 0; i < 24; i++) {
+        const index = (hash + i * 37) % pool.length;
+        if (i < 12) seed12.push(pool[index]);
+        seed24.push(pool[index]);
+      }
+
+      return { seed12, seed24 };
     }
 
+    /* SEED-LOGIK */
     const pw2Input = document.getElementById("pw2-input");
     const seedContainer = document.getElementById("seed-container");
     const seed12Grid = document.getElementById("seed12-grid");
     const seed24Grid = document.getElementById("seed24-grid");
     const seedError = document.getElementById("seed-error");
-    const showBtn = document.getElementById("show-seeds-btn");
 
-    showBtn.addEventListener("click", () => {
+    document.getElementById("show-seeds-btn").onclick = () => {
       const pw2 = pw2Input.value;
 
-      // Fehlertext IMMER zuerst leeren
       seedError.textContent = "";
       seedContainer.style.display = "none";
 
-      // Wenn PW2 falsch → NUR dann Fehler anzeigen
       if (pw2 !== user.pw2) {
         seedError.textContent = "Falsches 2. Passwort.";
         return;
       }
 
-      // Wenn PW2 richtig → Seeds anzeigen
-      const result = verifyAndDeriveIdentity(user.username, pw2);
+      const result = deriveSeeds(user.username, user.pw1, user.pw2, user.mask);
 
       seed12Grid.innerHTML = result.seed12.map(w => `<div>${w}</div>`).join("");
       seed24Grid.innerHTML = result.seed24.map(w => `<div>${w}</div>`).join("");
 
       seedContainer.style.display = "block";
-    });
+    };
 
-    document.getElementById("logout-btn").addEventListener("click", () => {
-      logout();
-      window.location.href = "../index.html";
-    });
+    /* THEME SWITCHER (Hook – Logik kommt später) */
+    document.getElementById("theme-toggle").onclick = () => {
+      alert("Theme-Switch kommt später.");
+    };
+
+    /* PW2 ÄNDERN */
+    document.getElementById("pw2-change").onclick = () => {
+      const newPw2 = prompt("Neues 2. Passwort (4 Zeichen):");
+      if (!newPw2 || newPw2.length !== 4) return alert("Ungültig.");
+      user.pw2 = newPw2;
+      saveUser(user);
+      alert("PW2 geändert.");
+    };
+
+    /* MASK REGENERIEREN */
+    document.getElementById("mask-refresh").onclick = () => {
+      user.mask = Math.random().toString(36).substring(2, 10).toUpperCase();
+      saveUser(user);
+      alert("Mask regeneriert.");
+      window.location.reload();
+    };
   </script>
 
 </body>
