@@ -12,7 +12,6 @@
     <h1>AbilityChain Explorer</h1>
     <input id="search" placeholder="Block, TX oder Adresse suchen…">
 
-    <!-- AUTH BUTTONS -->
     <div style="margin-top:20px;">
       <button data-auth="login" id="btn-login">Login / Register</button>
       <button data-auth="settings" id="btn-settings" style="display:none;">Settings</button>
@@ -25,14 +24,11 @@
     <section id="latest-txs"></section>
   </main>
 
-  <!-- EXPLORER LOGIK -->
   <script src="explorer.js"></script>
 
-  <!-- AUTH LOGIK (nur EINMAL laden!) -->
   <script type="module">
     import { initAuthUI, isLoggedIn, logout } from "../../global/auth.js";
 
-    // Popup laden + Buttons aktivieren
     initAuthUI();
 
     const btnLogin = document.getElementById("btn-login");
