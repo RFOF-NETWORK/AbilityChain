@@ -4,77 +4,40 @@
   <meta charset="UTF-8">
   <title>AbilityChain Wallet (PZQQET-0)</title>
   <link rel="stylesheet" href="styles.css">
-
-  <style>
-    /* --- AUTH POPUP (D‑Minimal, Blau + Gold) --- */
-    #auth-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.6);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-    }
-    #auth-popup {
-      background: #000;
-      border: 2px solid #FFD700;
-      border-radius: 8px;
-      padding: 20px;
-      width: 300px;
-      color: #FFD700;
-      font-family: system-ui, sans-serif;
-      position: relative;
-    }
-    #auth-popup input {
-      width: 100%;
-      margin: 5px 0;
-      padding: 6px 8px;
-      background: #000;
-      border: 1px solid #FFD700;
-      color: #FFD700;
-    }
-    #auth-popup button {
-      background: #0055FF;
-      color: #FFD700;
-      border: none;
-      padding: 6px 10px;
-      margin: 4px 2px;
-      cursor: pointer;
-    }
-    #auth-close {
-      position: absolute;
-      top: 6px;
-      right: 6px;
-      background: transparent;
-      border: none;
-      color: #FFD700;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    .auth-msg {
-      margin-top: 6px;
-      font-size: 12px;
-    }
-  </style>
 </head>
-
 <body>
 
   <header>
     <h1>AbilityChain Wallet (PZQQET-0)</h1>
-
-    <!-- AUTH BUTTONS -->
-    <div style="margin-top:20px;">
-      <button data-auth="login">Login / Register</button>
-      <button data-auth="settings" onclick="window.location.href='../settings/index.html'" style="display:none;">Settings</button>
-      <button data-auth="logout" style="display:none;">Logout</button>
-    </div>
   </header>
 
   <main>
 
-    <!-- WALLET UI (nur sichtbar wenn eingeloggt) -->
+    <section id="auth">
+      <h2>Login / Account erstellen</h2>
+
+      <div id="register-box">
+        <h3>Account erstellen</h3>
+        <input id="reg-user" placeholder="Username">
+        <input id="reg-pw1" type="password" placeholder="Passwort">
+        <input id="reg-pw2" type="password" placeholder="Passwort wiederholen">
+        <select id="reg-words">
+          <option value="12">12 Wörter</option>
+          <option value="24">24 Wörter</option>
+        </select>
+        <button id="reg-btn">Account erstellen + PZQQET-Seed</button>
+        <pre id="reg-seed"></pre>
+      </div>
+
+      <div id="login-box">
+        <h3>Login</h3>
+        <input id="login-user" placeholder="Username">
+        <input id="login-pw" type="password" placeholder="Passwort">
+        <button id="login-btn">Login</button>
+        <pre id="login-status"></pre>
+      </div>
+    </section>
+
     <section id="wallet-ui" style="display:none;">
       <section id="balance"></section>
       <section id="mining"></section>
@@ -84,37 +47,6 @@
 
   </main>
 
-  <!-- POPUP CONTAINER -->
-  <div id="auth-overlay">
-    <div id="auth-popup">
-      <button id="auth-close">×</button>
-      <h2 style="margin-top:0;">AbilityChain Login</h2>
-
-      <div style="margin-bottom:10px;">
-        <button id="auth-mode-login">Login</button>
-        <button id="auth-mode-register">Register</button>
-      </div>
-
-      <!-- LOGIN -->
-      <div id="auth-login-box">
-        <input id="login-user" placeholder="Username">
-        <input id="login-pw1" type="password" maxlength="16" placeholder="Passwort (16 Zeichen)">
-        <button id="login-btn">Login</button>
-        <div id="login-msg" class="auth-msg"></div>
-      </div>
-
-      <!-- REGISTER -->
-      <div id="auth-register-box" style="display:none;">
-        <input id="reg-user" placeholder="Username">
-        <input id="reg-pw1" type="password" maxlength="16" placeholder="Passwort (16 Zeichen)">
-        <input id="reg-pw2" type="password" maxlength="4" placeholder="2. Passwort (4 Zeichen)">
-        <button id="reg-btn">Account erstellen</button>
-        <div id="reg-msg" class="auth-msg"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- WALLET ENGINE -->
   <script src="pzqqet-0_standard.js"></script>
   <script src="xp-mining.js"></script>
   <script src="time-token.js"></script>
@@ -126,19 +58,6 @@
   <script src="ui/components/mining-box.js"></script>
   <script src="ui/components/tx-history.js"></script>
   <script src="ui/components/dex-buttons.js"></script>
-
-  <!-- AUTH LOGIK -->
-  <script type="module" src="../global/auth.js"></script>
-  <script type="module">
-    import { initAuthUI, isLoggedIn } from "../global/auth.js";
-
-    initAuthUI();
-
-    // Wallet UI nur anzeigen, wenn eingeloggt
-    if (isLoggedIn()) {
-      document.getElementById("wallet-ui").style.display = "block";
-    }
-  </script>
 
 </body>
 </html>
