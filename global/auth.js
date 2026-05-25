@@ -2,6 +2,8 @@
 // AbilityChain – Global Authentication System
 // Ultra-minimal, Blau+Gold, PZQQET-ready
 
+import { PZQQETFUSIONMASTER } from "../wallet/pzqqet-0_standard.js";
+
 // ------------------------------------------------------------
 // 1. GLOBAL STORAGE KEY
 // ------------------------------------------------------------
@@ -57,36 +59,12 @@ export function initAuthUI() {
 function injectPopupIfMissing() {
   if (document.getElementById("auth-overlay")) return;
 
-  const html = `
-    <div id="auth-overlay" style="display:none;">
-      <div id="auth-popup">
-        <button id="auth-close">×</button>
-        <h2 style="margin-top:0;">AbilityChain Login</h2>
-
-        <div style="margin-bottom:10px;">
-          <button id="auth-mode-login">Login</button>
-          <button id="auth-mode-register">Register</button>
-        </div>
-
-        <div id="auth-login-box">
-          <input id="login-user" placeholder="Username">
-          <input id="login-pw1" type="password" maxlength="16" placeholder="Passwort (16 Zeichen)">
-          <button id="login-btn">Login</button>
-          <div id="login-msg" class="auth-msg"></div>
-        </div>
-
-        <div id="auth-register-box" style="display:none;">
-          <input id="reg-user" placeholder="Username">
-          <input id="reg-pw1" type="password" maxlength="16" placeholder="Passwort (16 Zeichen)">
-          <input id="reg-pw2" type="password" maxlength="4" placeholder="2. Passwort (4 Zeichen)">
-          <button id="reg-btn">Account erstellen</button>
-          <div id="reg-msg" class="auth-msg"></div>
-        </div>
-      </div>
-    </div>
-  `;
-
-  document.body.insertAdjacentHTML("beforeend", html);
+  fetch("../global/popup.html")
+    .then(r => r.text())
+    .then(html => {
+      document.body.insertAdjacentHTML("beforeend", html);
+      attachPopupHandlers();
+    });
 }
 
 
@@ -110,15 +88,29 @@ function updateAuthUI() {
 
 
 // ------------------------------------------------------------
-// 6. POPUP LOGIK
+// 6. SEED GENERATOR (EINMALIG)
+// ------------------------------------------------------------
+function generateSeeds() {
+  const pool = PZQQETFUSIONMASTER.Axioms.wordPool;
+
+  const seed12 = Array.from({ length: 12 }, () =>
+    pool[Math.floor(Math.random() * pool.length)]
+  );
+
+  const seed24 = Array.from({ length: 24 }, () =>
+    pool[Math.floor(Math.random() * pool.length)]
+  );
+
+  return { seed12, seed24 };
+}
+
+
+// ------------------------------------------------------------
+// 7. POPUP LOGIK
 // ------------------------------------------------------------
 function attachPopupHandlers() {
   const overlay = document.getElementById("auth-overlay");
-  const popup = document.getElementById("auth-popup");
-  if (!overlay || !popup) return;
-
-  const openBtns = document.querySelectorAll("[data-auth='login']");
-  const closeBtn = document.getElementById("auth-close");
+  if (!overlay) return;
 
   const loginBox = document.getElementById("auth-login-box");
   const registerBox = document.getElementById("auth-register-box");
@@ -126,35 +118,27 @@ function attachPopupHandlers() {
   const modeLoginBtn = document.getElementById("auth-mode-login");
   const modeRegisterBtn = document.getElementById("auth-mode-register");
 
-  openBtns.forEach(btn => {
-    btn.addEventListener("click", () => {
-      overlay.style.display = "flex";
-      setMode("login");
-    });
-  });
-
-  if (closeBtn) {
-    closeBtn.addEventListener("click", () => {
-      overlay.style.display = "none";
-    });
-  }
+  const closeBtn = document.getElementById("auth-close");
+  if (closeBtn) closeBtn.onclick = () => (overlay.style.display = "none");
 
   function setMode(mode) {
-    if (mode === "login") {
-      loginBox.style.display = "block";
-      registerBox.style.display = "none";
-    } else {
-      loginBox.style.display = "none";
-      registerBox.style.display = "block";
-    }
+    loginBox.style.display = mode === "login" ? "block" : "none";
+    registerBox.style.display = mode === "register" ? "block" : "none";
   }
 
-  if (modeLoginBtn) modeLoginBtn.addEventListener("click", () => setMode("login"));
-  if (modeRegisterBtn) modeRegisterBtn.addEventListener("click", () => setMode("register"));
+  if (modeLoginBtn) modeLoginBtn.onclick = () => setMode("login");
+  if (modeRegisterBtn) modeRegisterBtn.onclick = () => setMode("register");
+
+  document.querySelectorAll("[data-auth='login']").forEach(btn => {
+    btn.onclick = () => {
+      overlay.style.display = "flex";
+      setMode("login");
+    };
+  });
 
 
   // ------------------------------------------------------------
-  // 7. REGISTER LOGIK — FINAL & KORREKT
+  // 8. REGISTER LOGIK — JETZT MIT SEEDS
   // ------------------------------------------------------------
   const regUser = document.getElementById("reg-user");
   const regPw1 = document.getElementById("reg-pw1");
@@ -163,7 +147,7 @@ function attachPopupHandlers() {
   const regMsg = document.getElementById("reg-msg");
 
   if (regBtn) {
-    regBtn.addEventListener("click", async () => {
+    regBtn.onclick = () => {
       const u = regUser.value.trim();
       const p1 = regPw1.value;
       const p2 = regPw2.value;
@@ -173,23 +157,27 @@ function attachPopupHandlers() {
         return;
       }
 
-      // USER WIRD JETZT KORREKT GESPEICHERT
+      // EINMALIGE SEED GENERIERUNG
+      const { seed12, seed24 } = generateSeeds();
+
       const user = {
         username: u,
         pw1: p1,
-        pw2: p2, // <--- ENTSCHEIDEND
-        mask: "PZQQET_MASK_PLACEHOLDER"
+        pw2: p2,
+        mask: crypto.randomUUID().slice(0, 8).toUpperCase(),
+        seed12,
+        seed24
       };
 
       saveUserSession(user);
       regMsg.textContent = "Account erstellt. Bitte jetzt einloggen.";
       setMode("login");
-    });
+    };
   }
 
 
   // ------------------------------------------------------------
-  // 8. LOGIN LOGIK — FINAL & KORREKT
+  // 9. LOGIN LOGIK
   // ------------------------------------------------------------
   const loginUser = document.getElementById("login-user");
   const loginPw1 = document.getElementById("login-pw1");
@@ -197,7 +185,7 @@ function attachPopupHandlers() {
   const loginMsg = document.getElementById("login-msg");
 
   if (loginBtn) {
-    loginBtn.addEventListener("click", async () => {
+    loginBtn.onclick = () => {
       const u = loginUser.value.trim();
       const p1 = loginPw1.value;
 
@@ -206,10 +194,8 @@ function attachPopupHandlers() {
         return;
       }
 
-      // USER AUS STORAGE LADEN
       const stored = getCurrentUser();
 
-      // LOGIN VALIDIERUNG
       if (!stored || stored.username !== u || stored.pw1 !== p1) {
         loginMsg.textContent = "Login fehlgeschlagen.";
         return;
@@ -218,17 +204,6 @@ function attachPopupHandlers() {
       saveUserSession(stored);
       loginMsg.textContent = "Login erfolgreich.";
       overlay.style.display = "none";
-    });
-  }
-
-
-  // ------------------------------------------------------------
-  // 9. LOGOUT
-  // ------------------------------------------------------------
-  const logoutBtn = document.querySelector("[data-auth='logout']");
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", () => {
-      logout();
-    });
+    };
   }
 }
