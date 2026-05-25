@@ -57,17 +57,10 @@
       padding: 8px;
       border-radius: 6px;
       user-select: none;
-      touch-action: pan-y; /* SCROLL FIX */
+      touch-action: pan-y; /* Scroll fix */
     }
 
-    .seed-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .seed-item div {
+    .seed-grid div {
       background: #000;
       color: #FFD700;
       border: 1px solid #FFD700;
@@ -75,14 +68,6 @@
       padding: 4px;
       font-size: 13px;
       text-align: center;
-      width: 100%;
-    }
-
-    .copy-btn {
-      background: #0033AA;
-      padding: 4px 6px;
-      font-size: 11px;
-      border-radius: 4px;
     }
 
     #seed-error {
@@ -110,11 +95,13 @@
 
       <div class="seed-section">
         <h4>12‑Wort‑Seed</h4>
+        <button id="copy12">Copy 12‑Wörter</button>
         <div id="seed12-grid" class="seed-grid"></div>
       </div>
 
       <div class="seed-section">
         <h4>24‑Wort‑Seed</h4>
+        <button id="copy24">Copy 24‑Wörter</button>
         <div id="seed24-grid" class="seed-grid"></div>
       </div>
 
@@ -125,7 +112,6 @@
 
   <script type="module">
     import { getCurrentUser, isLoggedIn, logout } from "../global/auth.js";
-    import { PZQQETFUSIONMASTER } from "../wallet/pzqqet-0_standard.js";
 
     if (!isLoggedIn()) {
       window.location.href = "../index.html";
@@ -158,25 +144,20 @@
       const seed12 = user.seed12 || [];
       const seed24 = user.seed24 || [];
 
-      seed12Grid.innerHTML = seed12
-        .map(w => `
-          <div class="seed-item">
-            <div>${w}</div>
-            <button class="copy-btn" onclick="navigator.clipboard.writeText('${w}')">Copy</button>
-          </div>
-        `)
-        .join("");
-
-      seed24Grid.innerHTML = seed24
-        .map(w => `
-          <div class="seed-item">
-            <div>${w}</div>
-            <button class="copy-btn" onclick="navigator.clipboard.writeText('${w}')">Copy</button>
-          </div>
-        `)
-        .join("");
+      seed12Grid.innerHTML = seed12.map(w => `<div>${w}</div>`).join("");
+      seed24Grid.innerHTML = seed24.map(w => `<div>${w}</div>`).join("");
 
       seedContainer.style.display = "block";
+    };
+
+    document.getElementById("copy12").onclick = () => {
+      const text = (user.seed12 || []).join(" ");
+      navigator.clipboard.writeText(text);
+    };
+
+    document.getElementById("copy24").onclick = () => {
+      const text = (user.seed24 || []).join(" ");
+      navigator.clipboard.writeText(text);
     };
 
     document.getElementById("logout-btn").onclick = () => {
