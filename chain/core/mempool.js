@@ -1,43 +1,52 @@
-// Mempool – unbestätigte Transaktionen (Validiert & Sicher)
+// Mempool – Fraktale Drei-Strom-Validierung (TX, TIME, XP)
 
 import { Validators } from "./validators.js";
 
 export class Mempool {
   constructor() {
-    this.pool = [];
-    this.txHashes = new Set(); // Dubletten-Schutz
+    this.pools = {
+      TX: [],
+      TIME: [],
+      XP: []
+    };
+    this.txHashes = new Set(); // Globaler Dubletten-Schutz
   }
 
-  // Fügt eine TX nur hinzu, wenn sie valide ist und noch nicht existiert
-  add(tx) {
-    if (!Validators.tx(tx)) {
-      console.warn("Mempool: Ungültige Transaktion abgelehnt");
+  // Fügt eine Nachricht (TX, TIME oder XP) zum passenden Strom-Pool hinzu
+  add(data, streamType = 'TX') {
+    if (!this.pools[streamType]) return false;
+
+    // Validierung spezifisch für den Strom-Typ
+    if (!Validators.validate(data, streamType)) {
+      console.warn(`Mempool: Ungültige Daten für Strom ${streamType} abgelehnt`);
       return false;
     }
 
-    if (this.txHashes.has(tx.hash)) {
-      return false; // Dublette vermeiden
-    }
+    if (this.txHashes.has(data.hash)) return false;
 
-    this.pool.push(tx);
-    this.txHashes.add(tx.hash);
+    this.pools[streamType].push(data);
+    this.txHashes.add(data.hash);
     return true;
   }
 
-  // Gibt alle ausstehenden TXs für den Explorer zurück
-  getPendingTransactions() {
-    return [...this.pool];
+  // Gibt ausstehende Daten für einen spezifischen Strom zurück
+  getPending(streamType) {
+    return [...(this.pools[streamType] || [])];
   }
 
-  // Leert den Pool für die Block-Erstellung
-  drain() {
-    const txs = [...this.pool];
-    this.pool = [];
-    this.txHashes.clear();
-    return txs;
+  // Leert gezielt nur einen Strom-Pool für die Block-Erstellung
+  drain(streamType) {
+    if (!this.pools[streamType]) return [];
+    
+    const items = [...this.pools[streamType]];
+    this.pools[streamType] = [];
+    
+    // Entferne Hashes aus dem globalen Index
+    items.forEach(item => this.txHashes.delete(item.hash));
+    return items;
   }
 
-  size() {
-    return this.pool.length;
+  size(streamType = 'TX') {
+    return this.pools[streamType] ? this.pools[streamType].length : 0;
   }
 }
