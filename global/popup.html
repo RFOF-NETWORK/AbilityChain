@@ -1,28 +1,27 @@
-<!-- /global/popup.html -->
-<div id="auth-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:9999; align-items:center; justify-content:center;">
-  <div id="auth-popup" style="background:#000; border:2px solid #FFD700; padding:20px; width:300px; color:#FFD700; position:relative;">
-    <button id="auth-close" style="position:absolute; top:5px; right:5px; background:transparent; border:none; color:#FFD700; cursor:pointer;">X</button>
+<div id="auth-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:9999; align-items:center; justify-content:center;">
+  <div id="auth-popup" style="background:#000; border:2px solid #FFD700; padding:20px; width:320px; color:#FFD700; position:relative; font-family:sans-serif;">
+    <button id="auth-close" style="position:absolute; top:5px; right:5px; background:transparent; border:1px solid #FFD700; color:#FFD700; cursor:pointer;">X</button>
     
-    <h2>AbilityChain</h2>
+    <h2 style="margin-top:0;">AbilityChain</h2>
     
-    <div style="margin-bottom:15px;">
-      <button id="auth-mode-login">Login</button>
-      <button id="auth-mode-register">Register</button>
+    <div style="margin-bottom:15px; display:flex; gap:10px;">
+      <button id="auth-mode-login" style="flex:1; cursor:pointer;">Login</button>
+      <button id="auth-mode-register" style="flex:1; cursor:pointer;">Register</button>
     </div>
 
     <div id="auth-login-box">
-      <input id="login-user" placeholder="Username" style="width:100%; margin-bottom:10px;">
-      <input id="login-pw1" type="password" maxlength="16" placeholder="PW (16 Zeichen)" style="width:100%; margin-bottom:10px;">
-      <button id="login-btn" style="width:100%;">Login</button>
+      <input id="login-user" placeholder="Username" style="width:100%; margin-bottom:10px; background:#111; color:#FFD700; border:1px solid #FFD700; padding:5px;">
+      <input id="login-pw1" type="password" maxlength="16" placeholder="PW (min. 16 Zeichen)" style="width:100%; margin-bottom:10px; background:#111; color:#FFD700; border:1px solid #FFD700; padding:5px;">
+      <button id="login-btn" style="width:100%; cursor:pointer;">Login</button>
     </div>
 
     <div id="auth-register-box" style="display:none;">
-      <input id="reg-user" placeholder="Username" style="width:100%; margin-bottom:10px;">
-      <input id="reg-pw1" type="password" maxlength="16" placeholder="PW (16 Zeichen)" style="width:100%; margin-bottom:10px;">
-      <input id="reg-pw2" type="password" maxlength="4" placeholder="Code (4 Zeichen)" style="width:100%; margin-bottom:10px;">
-      <button id="reg-btn" style="width:100%;">Account erstellen</button>
+      <input id="reg-user" placeholder="Username" style="width:100%; margin-bottom:10px; background:#111; color:#FFD700; border:1px solid #FFD700; padding:5px;">
+      <input id="reg-pw1" type="password" maxlength="16" placeholder="PW (min. 16 Zeichen)" style="width:100%; margin-bottom:10px; background:#111; color:#FFD700; border:1px solid #FFD700; padding:5px;">
+      <input id="reg-pw2" type="password" maxlength="4" placeholder="Code (4 Zeichen)" style="width:100%; margin-bottom:10px; background:#111; color:#FFD700; border:1px solid #FFD700; padding:5px;">
+      <button id="reg-btn" style="width:100%; cursor:pointer;">Account erstellen</button>
     </div>
     
-    <div id="reg-msg" style="font-size:12px; margin-top:10px;"></div>
+    <div id="reg-msg" style="font-size:12px; margin-top:10px; word-break:break-all;"></div>
   </div>
 </div>
