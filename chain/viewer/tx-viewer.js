@@ -1,6 +1,12 @@
-// TX Viewer – zeigt Details einer einzelnen Transaktion
+// chain/viewer/tx-viewer.js – Transaktions-Viewer (PZQQET-0 konform)
+import { Schema } from "../protocol/schema.js";
 
 export function renderTxDetails(tx) {
+  // Validierung gegen das PZQQET-Schema
+  if (!Schema.validate('Transaction', tx)) {
+    return `<div class="error">Ungültige Transaktionsstruktur.</div>`;
+  }
+
   return `
     <div class="tx-details">
       <h2>Transaktion</h2>
