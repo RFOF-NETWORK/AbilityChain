@@ -3,8 +3,7 @@
 ---
 
 
-
-```
+```text
 RFOF-GOLDEN-AbilityChain/
 │
 ├── .github/
@@ -18,14 +17,17 @@ RFOF-GOLDEN-AbilityChain/
 │   │   ├── mempool.js
 │   │   ├── consensus.js
 │   │   └── validators.js
+│   │
 │   ├── protocol/
 │   │   ├── encoding.js
 │   │   ├── schema.js
 │   │   └── network.js
+│   │
 │   ├── explorer/
 │   │   ├── index.html
 │   │   ├── explorer.js
 │   │   └── explorer.css
+│   │
 │   └── viewer/
 │       ├── tx-viewer.js
 │       ├── block-viewer.js
@@ -38,16 +40,21 @@ RFOF-GOLDEN-AbilityChain/
 │   ├── xp-mining.js
 │   ├── time-token.js
 │   ├── persistence.js
-│   └── ui/
-│       ├── components/
-│       │   ├── balance-tile.js
-│       │   ├── euro-box.js
-│       │   ├── mining-box.js
-│       │   ├── tx-history.js
-│       │   └── dex-buttons.js
-│       └── styles/
-│           ├── dark.css
-│           └── light.css
+│   │
+│   ├── ui/
+│   │   ├── components/
+│   │   │   ├── balance-tile.js
+│   │   │   ├── euro-box.js
+│   │   │   ├── mining-box.js
+│   │   │   ├── tx-history.js
+│   │   │   └── dex-buttons.js
+│   │   │
+│   │   └── styles/
+│   │       ├── dark.css
+│   │       └── light.css
+│
+├── settings/
+│   └── index.html
 │
 ├── api/
 │   ├── wallet-controller.js
@@ -55,8 +62,12 @@ RFOF-GOLDEN-AbilityChain/
 │   ├── finance-controller.js
 │   └── explorer-controller.js
 │
+├── global/
+│   ├── auth.js
+│   └── popup.html
+│
 ├── public/
-│   ├── favicon.ico
+│   ├── chain.json
 │   ├── logo.svg
 │   └── manifest.json
 │
@@ -65,11 +76,62 @@ RFOF-GOLDEN-AbilityChain/
 │   ├── serve.js
 │   └── deploy.js
 │
-├── .gitignore
-├── package.json
+├── index.html
 ├── README.md
-└── LICENSE
+├── LICENSE.md
+├── package.json
+└── styles.css
 ```
+
+---
+
+⚙️ Technische Logik dieser Struktur
+
+| Bereich | Funktion | Sichtbarkeit / UI‑Potenzial |
+|----------|-----------|-----------------------------|
+| chain/core | Blockchain‑Kernlogik (Ledger, Blocks, Mempool, Consensus, Validators) | Backend‑Berechnung, kann über Explorer visualisiert werden |
+| chain/protocol | Netzwerk‑ und Daten‑Encoding | unsichtbar, liefert Daten für Explorer |
+| chain/explorer | Frontend für Chain‑Anzeige | zeigt Blöcke, TXs, Hashes — hier erweitern wir UI |
+| chain/viewer | Detailansicht einzelner Blöcke/TXs | wird als Sub‑Viewer unter Explorer eingebettet |
+| wallet/ | Benutzer‑Wallet‑Frontend | Balance, Mining, History, DEX — alles sichtbar |
+| wallet/ui/components | modulare UI‑Tiles | perfekt für dynamische Darstellung im Vollbild |
+| wallet/ui/styles | Theme‑System (dark/light) | optische Anpassung |
+| api/ | Controller‑Layer | Datenquelle für Frontend |
+| global/ | Authentifizierung & Popup | Login‑System |
+| public/ | statische Assets & chain.json | Chain‑Datenquelle |
+| scripts/ | Build‑, Serve‑, Deploy‑Automatisierung | technische Infrastruktur |
+| settings/ | Benutzer‑Einstellungen | aktuell minimal, wird erweitert |
+| index.html | Home‑Dashboard | Einstiegspunkt für gesamte App |
+
+---
+
+🧠 möglichkeiten
+
+1. UI‑Erweiterung (sichtbares Maß)
+Wir machen:
+- Explorer:  
+  - chain.json wird direkt geladen → Blöcke, TXs, Hashes sichtbar.  
+  - Scroll‑/Sub‑Viewer‑Integration für Details.  
+  - Vollbild‑Layout (Viewport‑Grid).
+
+- Wallet:  
+  - Balance‑Tile, Mining‑Box, History, DEX werden wirklich befüllt.  
+  - Layout wird vertikal gestreckt, alles sichtbar bis unten.  
+  - Daten kommen aus wallet-controller.js + persistence.js.
+
+- Home (index.html):  
+  - Dashboard‑Charakter: Chain‑Status, Wallet‑Summary, Explorer‑Preview.  
+  - Login‑Status sichtbar oben rechts.
+
+---
+
+2. Settings‑Integration
+Die settings/index.html wird:
+- in das globale Auth‑System eingebunden,
+- als UI‑Erweiterung mit Theme‑Switch (dark/light),
+- mit Account‑Optionen (PW2, Mask, Session‑Timeout).
+
+---a
 
 1. .gitignore
 
