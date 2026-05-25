@@ -1,8 +1,13 @@
-// Block Viewer – zeigt Details eines Blocks
-
+// chain/viewer/block-viewer.js – Block Viewer (PZQQET-0 Standard konform)
 import { renderTxDetails } from "./tx-viewer.js";
+import { Schema } from "../protocol/schema.js"; // Import zur Validierung
 
 export function renderBlockDetails(block) {
+  // Integrierte Validierung vor dem Rendern
+  if (!Schema.validate('Block', block)) {
+    return `<div class="error">Fehler: Block-Datenstruktur nicht PZQQET-0 konform.</div>`;
+  }
+
   const txs = block.transactions.map(renderTxDetails).join("");
 
   return `
