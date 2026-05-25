@@ -1,28 +1,29 @@
-// Ledger – Grundbuch der AbilityChain (Optimiert für Explorer & Wallet)
+// Ledger – Grundbuch der AbilityChain (Fraktal strukturiert)
 
 export class Ledger {
-  constructor() {
-    this.state = new Map();        // address → { xp, time, balance, identity }
-    this.blocks = [];              // vollständige BOxBlock-Kette
-    this.txIndex = new Map();      // txHash → txData (für schnellen Explorer-Zugriff)
+  constructor(genesisHash) {
+    this.state = new Map();
+    this.genesisHash = genesisHash; // Der vertikale Anker
+    
+    // Horizontale Ströme
+    this.streams = {
+      TX: [],
+      TIME: [],
+      XP: []
+    };
+    
+    this.txIndex = new Map();
   }
 
-  // Initialisiert Adresse mit PZQQET-Identitäts-Anker
+  // Initialisiert Adresse
   initAddress(addr, identity = null) {
     if (!this.state.has(addr)) {
-      this.state.set(addr, { 
-        xp: 0, 
-        time: 0, 
-        balance: 0,
-        identity: identity // PZQQET-Masken-Anker
-      });
+      this.state.set(addr, { xp: 0, time: 0, balance: 0, identity });
     }
   }
 
-  // Validiert und führt Transaktion aus
   applyTransaction(tx) {
-    if (tx.from === tx.to) return false; // Kein Self-Transfer
-
+    if (tx.from === tx.to) return false;
     this.initAddress(tx.from);
     this.initAddress(tx.to);
 
@@ -30,30 +31,32 @@ export class Ledger {
     const to = this.state.get(tx.to);
 
     if (from.balance < tx.amount) return false;
-
     from.balance -= tx.amount;
     to.balance += tx.amount;
 
-    // Indexierung für den Explorer
-    this.txIndex.set(tx.hash || Math.random().toString(36), tx);
-
+    this.txIndex.set(tx.hash, tx);
     return true;
   }
 
-  // Wendet einen Block an und aktualisiert den Ledger
+  // Wendet Block auf den jeweiligen Strom an
   applyBlock(block) {
-    for (const tx of block.transactions) {
-      if (!this.applyTransaction(tx)) continue;
+    // Validierung der fraktalen Integrität
+    if (block.fractalRoot !== this.genesisHash) return false;
+
+    if (block.streamType === 'TX') {
+      for (const tx of block.transactions) this.applyTransaction(tx);
     }
-    this.blocks.push(block);
+    
+    // Strom-Einsortierung
+    if (this.streams[block.streamType]) {
+      this.streams[block.streamType].push(block);
+    }
   }
 
-  // Explorer-Hilfe: Transaktion finden
-  getTransaction(txHash) {
-    return this.txIndex.get(txHash) || null;
+  getStream(type) {
+    return this.streams[type] || [];
   }
 
-  // Wallet-Hilfe: Status abrufen
   getState(addr) {
     return this.state.get(addr) || null;
   }
