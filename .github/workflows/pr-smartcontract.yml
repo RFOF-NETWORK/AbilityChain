@@ -1,0 +1,18 @@
+name: Smart Contract Validation
+
+on:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Collect Workflow Status
+        id: status
+        run: |
+          echo "status=$(jq -n '{status:\"success\"}')" >> $GITHUB_OUTPUT
+
+      - name: Run Smart Contract
+        run: node ./scripts/pr-validate.js
