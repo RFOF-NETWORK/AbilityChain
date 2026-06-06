@@ -1,14 +1,28 @@
-# RFOF-GOLDEN-AbilityChain
+# RFOF-NETWORK/AbilityChain
 
 ---
-
-
-```text
-RFOF-GOLDEN-AbilityChain/
+```
+AbilityChain/
 │
 ├── .github/
 │   └── workflows/
+│       ├── ci.yml
+│       ├── fork-safe.yml
+│       ├── cli.yml
+│       ├── pr-smartcontract.yml
+│       ├── extension-deploy.yml
 │       └── deploy.yml
+│
+├── qc/
+│   ├── ability_chain.qc
+│   └── dependencies.yml
+│
+├── quellcode-bot/
+│   ├── cli.js
+│   ├── qc-engine.js
+│   ├── qc-parser.js
+│   ├── qc-runtime.js
+│   └── qc-validator.js
 │
 ├── chain/
 │   ├── core/
@@ -74,15 +88,22 @@ RFOF-GOLDEN-AbilityChain/
 ├── scripts/
 │   ├── build.js
 │   ├── serve.js
-│   └── deploy.js
+│   ├── deploy.js
+│   ├── fork-detect.js
+│   ├── pr-validate.js
+│   └── sync-upstream.js
 │
+├── extensions/
+│   └── example-extension/
+│       └── extension.config.json
+│
+├── registry.json
 ├── index.html
 ├── README.md
 ├── LICENSE.md
 ├── package.json
 └── styles.css
 ```
-
 ---
 
 ⚙️ Technische Logik dieser Struktur
