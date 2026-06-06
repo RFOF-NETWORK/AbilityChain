@@ -1,0 +1,13 @@
+name: Fork Safe
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  detect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Detect Fork
+        run: node ./scripts/fork-detect.js
