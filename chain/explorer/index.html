@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>AbilityChain Explorer</title>
+  <link rel="stylesheet" href="explorer.css">
+</head>
+
+<body>
+
+  <header>
+    <h1>AbilityChain Explorer</h1>
+    <input id="search" placeholder="Block, TX oder Adresse suchen…">
+
+    <div style="margin-top:20px;">
+      <button data-auth="login" id="btn-login">Login / Register</button>
+      <button data-auth="settings" id="btn-settings" style="display:none;">Settings</button>
+      <button data-auth="logout" id="btn-logout" style="display:none;">Logout</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="latest-blocks"></section>
+    <section id="latest-txs"></section>
+  </main>
+
+  <script src="explorer.js"></script>
+
+  <script type="module">
+    import { initAuthUI, isLoggedIn, logout } from "../../global/auth.js";
+
+    initAuthUI();
+
+    const btnLogin = document.getElementById("btn-login");
+    const btnSettings = document.getElementById("btn-settings");
+    const btnLogout = document.getElementById("btn-logout");
+
+    function updateUI() {
+      if (isLoggedIn()) {
+        btnLogin.style.display = "none";
+        btnSettings.style.display = "inline-block";
+        btnLogout.style.display = "inline-block";
+      } else {
+        btnLogin.style.display = "inline-block";
+        btnSettings.style.display = "none";
+        btnLogout.style.display = "none";
+      }
+    }
+
+    updateUI();
+
+    btnLogout.addEventListener("click", () => {
+      logout();
+      updateUI();
+    });
+
+    btnSettings.addEventListener("click", () => {
+      window.location.href = "../../settings/index.html";
+    });
+  </script>
+
+</body>
+</html>

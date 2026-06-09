@@ -1,0 +1,17 @@
+{
+  "genesisHash": "GENESIS-PZQQET-0000000000",
+  "streams": {
+    "TX": [],
+    "TIME": [],
+    "XP": []
+  },
+  "mempool": {
+    "TX": [],
+    "TIME": [],
+    "XP": []
+  },
+  "consensus": {
+    "algorithm": "PZQQET-0",
+    "version": "fractal-v1"
+  }
+}

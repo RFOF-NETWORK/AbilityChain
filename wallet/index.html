@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>AbilityChain Wallet (PZQQET-0)</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+  <header>
+    <h1>AbilityChain Wallet (PZQQET-0)</h1>
+
+    <div style="margin-top:20px;">
+      <button data-auth="login" id="btn-login">Login / Register</button>
+      <button data-auth="settings" id="btn-settings" style="display:none;">Settings</button>
+      <button data-auth="logout" id="btn-logout" style="display:none;">Logout</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="wallet-ui" style="display:none;">
+      <section id="balance"></section>
+      <section id="mining"></section>
+      <section id="history"></section>
+      <section id="dex"></section>
+    </section>
+  </main>
+
+  <script src="pzqqet-0_standard.js"></script>
+  <script src="xp-mining.js"></script>
+  <script src="time-token.js"></script>
+  <script src="persistence.js"></script>
+
+  <script src="../api/wallet-controller.js"></script>
+  <script src="ui/components/balance-tile.js"></script>
+  <script src="ui/components/euro-box.js"></script>
+  <script src="ui/components/mining-box.js"></script>
+  <script src="ui/components/tx-history.js"></script>
+  <script src="ui/components/dex-buttons.js"></script>
+
+  <script type="module">
+    import { initAuthUI, isLoggedIn, logout } from "../global/auth.js";
+
+    initAuthUI();
+
+    const btnLogin = document.getElementById("btn-login");
+    const btnSettings = document.getElementById("btn-settings");
+    const btnLogout = document.getElementById("btn-logout");
+    const walletUI = document.getElementById("wallet-ui");
+
+    function updateUI() {
+      if (isLoggedIn()) {
+        btnLogin.style.display = "none";
+        btnSettings.style.display = "inline-block";
+        btnLogout.style.display = "inline-block";
+        walletUI.style.display = "block";
+      } else {
+        btnLogin.style.display = "inline-block";
+        btnSettings.style.display = "none";
+        btnLogout.style.display = "none";
+        walletUI.style.display = "none";
+      }
+    }
+
+    updateUI();
+
+    btnLogout.addEventListener("click", () => {
+      logout();
+      updateUI();
+    });
+
+    btnSettings.addEventListener("click", () => {
+      window.location.href = "../settings/index.html";
+    });
+  </script>
+
+</body>
+</html>

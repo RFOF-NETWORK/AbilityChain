@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>AbilityChain – Settings</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { background: #000; color: #FFD700; font-family: system-ui, sans-serif; margin: 0; padding: 20px; }
+    h1 { margin-top: 0; color: #FFD700; }
+    .section { border: 1px solid #FFD700; padding: 15px; margin-bottom: 20px; border-radius: 6px; }
+    .seed-box { background: #111; padding: 10px; border: 1px solid #FFD700; margin-top: 10px; white-space: pre-wrap; font-size: 14px; }
+    button { background: #000; color: #FFD700; border: 1px solid #FFD700; padding: 8px 12px; cursor: pointer; margin-top: 10px; }
+    input { width: 100%; padding: 6px; margin-top: 6px; background: #000; border: 1px solid #FFD700; color: #FFD700; }
+  </style>
+</head>
+<body>
+
+  <h1>Settings</h1>
+
+  <div>
+    <button data-auth="login">Login</button>
+    <button data-auth="settings" style="display:none;">Settings</button>
+    <button data-auth="logout" style="display:none;" onclick="localStorage.removeItem('ability.user'); location.reload();">Logout</button>
+  </div>
+
+  <div class="section">
+    <h2>Seed Phrase (PZQQET-0 Standard)</h2>
+    <p>Zum Anzeigen bitte dein 4‑stelliges PW2 eingeben:</p>
+    <input id="pw2-input" type="password" maxlength="4" placeholder="Code (4 Zeichen)">
+    <button id="show-seeds-btn">Seeds anzeigen</button>
+    <div id="seed-output" class="seed-box" style="display:none;"></div>
+  </div>
+
+  <div class="section">
+    <h2>Identity Mask</h2>
+    <div id="mask-output" class="seed-box">Keine Maske aktiv.</div>
+  </div>
+
+  <script type="module">
+    import { initAuthUI } from "../global/auth.js";
+
+    // Globaler Initialisierungs-Standard
+    initAuthUI();
+
+    const btn = document.getElementById("show-seeds-btn");
+    const out = document.getElementById("seed-output");
+    const pw2 = document.getElementById("pw2-input");
+
+    btn.onclick = () => {
+      const user = JSON.parse(localStorage.getItem("ability.user"));
+      
+      // Validierung gegen PZQQET-0 Standard
+      if (!user) {
+        out.style.display = "block";
+        out.textContent = "Fehler: Nicht eingeloggt.";
+        return;
+      }
+
+      // 4242 als deterministischer PZQQET-Code
+      if (pw2.value !== "4242") {
+        out.style.display = "block";
+        out.textContent = "Fehler: PW2 inkorrekt.";
+        return;
+      }
+
+      out.style.display = "block";
+      out.textContent = "12‑Wörter Seed:\n[GENERATED_BY_PZQQET_AXIOM]\n\n24‑Wörter Seed:\n[GENERATED_BY_PZQQET_AXIOM]";
+    };
+  </script>
+</body>
+</html>

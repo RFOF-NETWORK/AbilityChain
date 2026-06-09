@@ -1,0 +1,50 @@
+/* FUSIONIERTE VERSION: chain/explorer/explorer.css */
+
+/* Deine explizit benötigten Import-Referenzen (Logik-Bindung) */
+@import url('../protocol/encoding.js');
+@import url('../protocol/schema.js');
+@import url('../wallet/ui/styles/dark.css');
+@import url('../wallet/ui/styles/light.css');
+
+/* PZQQET-0 Design-Stammbaum */
+:root {
+  --gold: #FFD700;
+  --bg-black: #000;
+  --bg-white: #FFF;
+  --text-dark: #333;
+}
+
+/* Basis-Struktur */
+body {
+  margin: 0;
+  padding: 20px;
+  font-family: system-ui, sans-serif;
+  background-color: var(--bg-black);
+  color: var(--gold);
+}
+
+/* Block & Transaktions-Module (entsprechend der explorer.js Rendering-Logik) */
+.block, .tx {
+  border: 1px solid var(--gold);
+  padding: 12px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  background: rgba(255, 215, 0, 0.05);
+}
+
+h3 {
+  margin-top: 0;
+  color: var(--gold);
+}
+
+/* Umschalt-Logik für PZQQET-Modi */
+body.light-mode {
+  background-color: var(--bg-white);
+  color: var(--text-dark);
+}
+
+body.light-mode .block, 
+body.light-mode .tx {
+  border-color: var(--gold);
+  background: rgba(0, 0, 0, 0.05);
+}
