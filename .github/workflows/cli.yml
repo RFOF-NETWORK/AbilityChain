@@ -1,0 +1,40 @@
+name: AbilityChain CLI Pipeline
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  qc-cli:
+    runs-on: ubuntu-latest
+    # self-hosted ready:
+    # runs-on: [self-hosted, linux, abilitychain-runner]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install Dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Detect Fork
+        run: node ./scripts/fork-detect.js
+
+      - name: Run AbilityChain QC Engine
+        run: node ./quellcode-bot/cli.js
+
+      - name: Output QC Decision
+        run: cat qc-output.json
+
+      - name: Store QC Result
+        uses: actions/upload-artifact@v4
+        with:
+          name: qc-output
+          path: qc-output.json

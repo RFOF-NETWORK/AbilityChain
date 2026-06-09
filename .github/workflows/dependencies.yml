@@ -1,0 +1,48 @@
+name: AbilityChain Dependencies
+
+roles:
+  owner:
+    permissions: [write, approve]
+  maintainer:
+    permissions: [write]
+  contributor:
+    permissions: [read]
+  extension:
+    permissions: [deploy]
+
+workflows:
+  ci:
+    needs: []
+    triggers: [push, pull_request]
+
+  fork_safe:
+    needs: []
+    triggers: [push, pull_request]
+    fork_only: true
+
+  pr_contract:
+    needs: [ci, fork_safe]
+    triggers: [pull_request]
+
+  deploy:
+    needs: [ci]
+    triggers: [push]
+    extension_only: true
+
+logic:
+  fork_detect:
+    if: github.event.pull_request.head.repo.fork == true
+    then:
+      enable: [fork_safe, pr_contract]
+      disable: [deploy]
+
+  extension_detect:
+    if: file_exists("extension.config.json")
+    then:
+      enable: [deploy]
+
+messages:
+  fork_success: "Fork validated. You may now build your own project."
+  pr_ready: "All workflows green. You may now open a Pull Request."
+  extension_ready: "Extension ready. Your project is successfully deployed."
+  original_ready: "All checks passed. You may now improve the original repository."
